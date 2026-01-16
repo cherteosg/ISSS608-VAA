@@ -33,5 +33,54 @@
     "title": "Hands-on Exercise 1",
     "section": "",
     "text": "exam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#importing-the-data-1",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#importing-the-data-1",
+    "title": "Hands-on Exercise 1",
+    "section": "Importing the data",
+    "text": "Importing the data\n\nexam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#hands-on-exercise-1-1",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#hands-on-exercise-1-1",
+    "title": "Hands-on Exercise 1",
+    "section": "Hands-on Exercise 1",
+    "text": "Hands-on Exercise 1\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_histogram(bins=10, \n                 boundary = 100,\n                 color=\"black\", \n                 fill=\"grey\") +\n  ggtitle(\"Distribution of Maths scores\")"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-bar",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-bar",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Bar",
+    "text": "Geom Bar\n\nggplot(data=exam_data, \n       aes(x=MATHS)) +\n  geom_bar()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-dot-plot",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-dot-plot",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Dot Plot",
+    "text": "Geom Dot Plot\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_dotplot(binwidth=2.5,         \n               dotsize = 0.5) +      \n  scale_y_continuous(NULL,           \n                     breaks = NULL)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-histogram",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-histogram",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Histogram",
+    "text": "Geom Histogram\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_histogram(bins=15)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-update-1",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-update-1",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Update 1",
+    "text": "Geom Update 1\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n    geom_histogram(bins=20,            \n                 color=\"black\",      \n                 fill=\"light blue\")"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-update-aes",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-update-aes",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Update AES",
+    "text": "Geom Update AES\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           fill = GENDER)) +\n  geom_histogram(bins=20, \n                 color=\"grey30\")"
   }
 ]
