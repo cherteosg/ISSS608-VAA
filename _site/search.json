@@ -82,5 +82,54 @@
     "title": "Hands-on Exercise 1",
     "section": "Geom Update AES",
     "text": "Geom Update AES\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           fill = GENDER)) +\n  geom_histogram(bins=20, \n                 color=\"grey30\")"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-density",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-density",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Density",
+    "text": "Geom Density\n\nggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_density()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-density-2",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-density-2",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Density 2",
+    "text": "Geom Density 2\n\nggplot(data=exam_data, \n       aes(x = MATHS, \n           colour = GENDER)) +\n  geom_density()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-box-plot",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-box-plot",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Box Plot",
+    "text": "Geom Box Plot\n\nggplot(data=exam_data, \n       aes(y = MATHS,       \n           x= GENDER)) +    \n  geom_boxplot()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-box-plot-notches",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-box-plot-notches",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Box Plot Notches",
+    "text": "Geom Box Plot Notches\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_boxplot(notch=TRUE)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-violin",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-violin",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Violin",
+    "text": "Geom Violin\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_violin()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-point",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-point",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Point",
+    "text": "Geom Point\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           y=ENGLISH)) +\n  geom_point()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-objects-combined",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-objects-combined",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Objects Combined",
+    "text": "Geom Objects Combined\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_boxplot() +                    \n  geom_point(position=\"jitter\", \n             size = 0.5)"
   }
 ]
