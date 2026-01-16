@@ -131,5 +131,89 @@
     "title": "Hands-on Exercise 1",
     "section": "Geom Objects Combined",
     "text": "Geom Objects Combined\n\nggplot(data=exam_data, \n       aes(y = MATHS, \n           x= GENDER)) +\n  geom_boxplot() +                    \n  geom_point(position=\"jitter\", \n             size = 0.5)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#stat-summary",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#stat-summary",
+    "title": "Hands-on Exercise 1",
+    "section": "Stat Summary",
+    "text": "Stat Summary\n\nggplot(data=exam_data, \n       aes(y = MATHS, x= GENDER)) +\n  geom_boxplot() +\n  stat_summary(geom = \"point\",       \n               fun = \"mean\",         \n               colour =\"red\",        \n               size=4)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#stat-geom-method",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#stat-geom-method",
+    "title": "Hands-on Exercise 1",
+    "section": "Stat Geom Method",
+    "text": "Stat Geom Method\n\nggplot(data=exam_data, \n       aes(y = MATHS, x= GENDER)) +\n  geom_boxplot() +\n  geom_point(stat=\"summary\",        \n             fun=\"mean\",           \n             colour=\"red\",          \n             size=4)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-smooth",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-smooth",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Smooth",
+    "text": "Geom Smooth\n\nggplot(data=exam_data, \n       aes(x= MATHS, y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(size=0.5)   \n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n`geom_smooth()` using method = 'loess' and formula = 'y ~ x'"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-smooth-override",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#geom-smooth-override",
+    "title": "Hands-on Exercise 1",
+    "section": "Geom Smooth Override",
+    "text": "Geom Smooth Override\n\nggplot(data=exam_data, \n       aes(x= MATHS, \n           y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(method=lm, \n              linewidth=0.5) \n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#facets",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#facets",
+    "title": "Hands-on Exercise 1",
+    "section": "Facets",
+    "text": "Facets\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20) +\n    facet_wrap(~ CLASS)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#grids",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#grids",
+    "title": "Hands-on Exercise 1",
+    "section": "Grids",
+    "text": "Grids\n\nggplot(data=exam_data, \n       aes(x= MATHS)) +\n  geom_histogram(bins=20) +\n    facet_grid(~ CLASS)"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#coordinates",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#coordinates",
+    "title": "Hands-on Exercise 1",
+    "section": "Coordinates",
+    "text": "Coordinates\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#coord-flip",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#coord-flip",
+    "title": "Hands-on Exercise 1",
+    "section": "Coord Flip",
+    "text": "Coord Flip\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#change-axis",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#change-axis",
+    "title": "Hands-on Exercise 1",
+    "section": "Change Axis",
+    "text": "Change Axis\n\nggplot(data=exam_data, \n       aes(x= MATHS, y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(method=lm, \n              size=0.5) +  \n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#change-axis-1",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#change-axis-1",
+    "title": "Hands-on Exercise 1",
+    "section": "Change Axis",
+    "text": "Change Axis\n\nggplot(data=exam_data, \n       aes(x= MATHS, y=ENGLISH)) +\n  geom_point() +\n  geom_smooth(method=lm, \n              size=0.5) +  \n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#themes---horizontal-classic",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#themes---horizontal-classic",
+    "title": "Hands-on Exercise 1",
+    "section": "Themes - Horizontal (Classic)",
+    "text": "Themes - Horizontal (Classic)\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_classic()"
+  },
+  {
+    "objectID": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#themes---horizontal-minimal",
+    "href": "Hands-on_EX/Hands-on_Ex01/Hands-on_Ex01.html#themes---horizontal-minimal",
+    "title": "Hands-on Exercise 1",
+    "section": "Themes - Horizontal (Minimal)",
+    "text": "Themes - Horizontal (Minimal)\n\nggplot(data=exam_data, \n       aes(x=RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_minimal()"
   }
 ]
