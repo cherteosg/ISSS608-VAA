@@ -33,7 +33,6 @@ ggplot(data=exam_data,
                   ylim=c(0,100)) +
   ggtitle("English scores versus Maths scores for Primary 3")
 ```
-
 ## Working with ggrepel
 
 ```{r}
