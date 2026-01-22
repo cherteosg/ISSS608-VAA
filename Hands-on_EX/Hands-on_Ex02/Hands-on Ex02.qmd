@@ -4,6 +4,7 @@ author: "Cher In Teo"
 ---
 
 ## Loading and Installing Required Libraries
+
 ```{r}
 pacman::p_load(ggrepel, patchwork, 
                ggthemes, hrbrthemes,
@@ -11,11 +12,13 @@ pacman::p_load(ggrepel, patchwork,
 ```
 
 ## Importing Data
+
 ```{r}
 exam_data <- read_csv("data/Exam_data.csv")
 ```
 
 ##Beyond ggplot2 annotation - ggrepel
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x= MATHS, 
@@ -32,6 +35,7 @@ ggplot(data=exam_data,
 ```
 
 ## ggrepel
+
 ```{r}
 ggplot(data=exam_data, 
        aes(x= MATHS, 
@@ -47,6 +51,7 @@ ggplot(data=exam_data,
 ```
 
 ##Beyond ggplot2 - themes
+
 ```{r}
 ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -59,6 +64,7 @@ ggplot(data=exam_data,
 ```
 
 ##Themes - pink & light
+
 ```{r}
 ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -71,6 +77,7 @@ ggplot(data=exam_data,
 ```
 
 ##Themes - linedraw
+
 ```{r}
 ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -81,6 +88,7 @@ ggplot(data=exam_data,
 ```
 
 ##Working with ggthemes package - The Economist
+
 ```{r}
 ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -93,6 +101,7 @@ ggplot(data=exam_data,
 ```
 
 ##Working with hrbrthemes package
+
 ```{r}
 ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -107,6 +116,7 @@ ggplot(data=exam_data,
 ##Beyond the single graph
 
 ##Maths
+
 ```{r}
 p1 <- ggplot(data=exam_data, 
              aes(x = MATHS)) +
@@ -120,6 +130,7 @@ p1
 ```
 
 ##English
+
 ```{r}
 p2 <-ggplot(data=exam_data, 
              aes(x = ENGLISH)) +
@@ -133,6 +144,7 @@ p2
 ```
 
 ##English vs. Maths
+
 ```{r}
 p3 <- ggplot(data=exam_data, 
              aes(x= MATHS, 
@@ -149,22 +161,26 @@ p3
 ## Creating Composite Figure - pathwork method
 
 ##Two graphs
+
 ```{r}
 p1 + p2
 ```
 
 ## Three graphs
+
 ```{r}
 (p1 / p2) | p3
 ```
 
 ## Creating Composite Figure with tagging
+
 ```{r}
 ((p1 / p2) | p3) + 
   plot_annotation(tag_levels = 'I')
 ```
 
 ## Creating Figure with inset
+
 ```{r}
 p3 + inset_element(p2, 
                    left = 0.02, 
@@ -174,6 +190,7 @@ p3 + inset_element(p2,
 ```
 
 ## Creating Composite Figure - with patchwork & ggthemes
+
 ```{r}
 patchwork <- (p1 / p2) | p3
 patchwork & theme_economist()
