@@ -50,7 +50,7 @@ ggplot(data=exam_data,
   ggtitle("English scores versus Maths scores for Primary 3")
 ```
 
-##Beyond ggplot2 - themes
+## Beyond ggplot2 - themes
 
 ```{r}
 ggplot(data=exam_data, 
@@ -63,7 +63,7 @@ ggplot(data=exam_data,
   ggtitle("Distribution of Maths scores")
 ```
 
-##Themes - pink & light
+## Themes - pink & light
 
 ```{r}
 ggplot(data=exam_data, 
@@ -76,7 +76,7 @@ ggplot(data=exam_data,
   ggtitle("Distribution of Maths scores")
 ```
 
-##Themes - linedraw
+## Themes - linedraw
 
 ```{r}
 ggplot(data=exam_data, 
@@ -87,7 +87,7 @@ ggplot(data=exam_data,
   ggtitle("Distribution of Maths scores")
 ```
 
-##Working with ggthemes package - The Economist
+## Working with ggthemes package - The Economist
 
 ```{r}
 ggplot(data=exam_data, 
@@ -100,7 +100,7 @@ ggplot(data=exam_data,
   theme_economist()
 ```
 
-##Working with hrbrthemes package
+## Working with hrbrthemes package
 
 ```{r}
 ggplot(data=exam_data, 
@@ -113,9 +113,9 @@ ggplot(data=exam_data,
   theme_ipsum(base_family = "sans")
 ```
 
-##Beyond the single graph
+## Beyond the single graph
 
-##Maths
+## Maths
 
 ```{r}
 p1 <- ggplot(data=exam_data, 
@@ -129,7 +129,7 @@ p1 <- ggplot(data=exam_data,
 p1
 ```
 
-##English
+## English
 
 ```{r}
 p2 <-ggplot(data=exam_data, 
@@ -143,7 +143,7 @@ p2 <-ggplot(data=exam_data,
 p2
 ```
 
-##English vs. Maths
+## English vs. Maths
 
 ```{r}
 p3 <- ggplot(data=exam_data, 
@@ -160,7 +160,7 @@ p3
 
 ## Creating Composite Figure - pathwork method
 
-##Two graphs
+## Two graphs
 
 ```{r}
 p1 + p2

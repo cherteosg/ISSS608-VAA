@@ -172,7 +172,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#loading-and-installing-required-libraries" id="toc-loading-and-installing-required-libraries" class="nav-link active" data-scroll-target="#loading-and-installing-required-libraries">Loading and Installing Required Libraries</a></li>
   <li><a href="#importing-data" id="toc-importing-data" class="nav-link" data-scroll-target="#importing-data">Importing Data</a></li>
   <li><a href="#ggrepel" id="toc-ggrepel" class="nav-link" data-scroll-target="#ggrepel">ggrepel</a></li>
+  <li><a href="#beyond-ggplot2---themes" id="toc-beyond-ggplot2---themes" class="nav-link" data-scroll-target="#beyond-ggplot2---themes">Beyond ggplot2 - themes</a></li>
+  <li><a href="#themes---pink-light" id="toc-themes---pink-light" class="nav-link" data-scroll-target="#themes---pink-light">Themes - pink &amp; light</a></li>
+  <li><a href="#themes---linedraw" id="toc-themes---linedraw" class="nav-link" data-scroll-target="#themes---linedraw">Themes - linedraw</a></li>
+  <li><a href="#working-with-ggthemes-package---the-economist" id="toc-working-with-ggthemes-package---the-economist" class="nav-link" data-scroll-target="#working-with-ggthemes-package---the-economist">Working with ggthemes package - The Economist</a></li>
+  <li><a href="#working-with-hrbrthemes-package" id="toc-working-with-hrbrthemes-package" class="nav-link" data-scroll-target="#working-with-hrbrthemes-package">Working with hrbrthemes package</a></li>
+  <li><a href="#beyond-the-single-graph" id="toc-beyond-the-single-graph" class="nav-link" data-scroll-target="#beyond-the-single-graph">Beyond the single graph</a></li>
+  <li><a href="#maths" id="toc-maths" class="nav-link" data-scroll-target="#maths">Maths</a></li>
+  <li><a href="#english" id="toc-english" class="nav-link" data-scroll-target="#english">English</a></li>
+  <li><a href="#english-vs.-maths" id="toc-english-vs.-maths" class="nav-link" data-scroll-target="#english-vs.-maths">English vs.&nbsp;Maths</a></li>
   <li><a href="#creating-composite-figure---pathwork-method" id="toc-creating-composite-figure---pathwork-method" class="nav-link" data-scroll-target="#creating-composite-figure---pathwork-method">Creating Composite Figure - pathwork method</a></li>
+  <li><a href="#two-graphs" id="toc-two-graphs" class="nav-link" data-scroll-target="#two-graphs">Two graphs</a></li>
   <li><a href="#three-graphs" id="toc-three-graphs" class="nav-link" data-scroll-target="#three-graphs">Three graphs</a></li>
   <li><a href="#creating-composite-figure-with-tagging" id="toc-creating-composite-figure-with-tagging" class="nav-link" data-scroll-target="#creating-composite-figure-with-tagging">Creating Composite Figure with tagging</a></li>
   <li><a href="#creating-figure-with-inset" id="toc-creating-figure-with-inset" class="nav-link" data-scroll-target="#creating-figure-with-inset">Creating Figure with inset</a></li>
@@ -286,7 +296,9 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##Beyond ggplot2 - themes</p>
+</section>
+<section id="beyond-ggplot2---themes" class="level2">
+<h2 class="anchored" data-anchor-id="beyond-ggplot2---themes">Beyond ggplot2 - themes</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> MATHS)) <span class="sc">+</span></span>
@@ -304,7 +316,9 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##Themes - pink &amp; light</p>
+</section>
+<section id="themes---pink-light" class="level2">
+<h2 class="anchored" data-anchor-id="themes---pink-light">Themes - pink &amp; light</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> MATHS)) <span class="sc">+</span></span>
@@ -322,7 +336,9 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##Themes - linedraw</p>
+</section>
+<section id="themes---linedraw" class="level2">
+<h2 class="anchored" data-anchor-id="themes---linedraw">Themes - linedraw</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> MATHS)) <span class="sc">+</span></span>
@@ -338,7 +354,9 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##Working with ggthemes package - The Economist</p>
+</section>
+<section id="working-with-ggthemes-package---the-economist" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-ggthemes-package---the-economist">Working with ggthemes package - The Economist</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> MATHS)) <span class="sc">+</span></span>
@@ -356,7 +374,9 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##Working with hrbrthemes package</p>
+</section>
+<section id="working-with-hrbrthemes-package" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-hrbrthemes-package">Working with hrbrthemes package</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> MATHS)) <span class="sc">+</span></span>
@@ -374,8 +394,12 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##Beyond the single graph</p>
-<p>##Maths</p>
+</section>
+<section id="beyond-the-single-graph" class="level2">
+<h2 class="anchored" data-anchor-id="beyond-the-single-graph">Beyond the single graph</h2>
+</section>
+<section id="maths" class="level2">
+<h2 class="anchored" data-anchor-id="maths">Maths</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> MATHS)) <span class="sc">+</span></span>
@@ -394,7 +418,9 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##English</p>
+</section>
+<section id="english" class="level2">
+<h2 class="anchored" data-anchor-id="english">English</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span><span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> ENGLISH)) <span class="sc">+</span></span>
@@ -413,7 +439,9 @@ increasing max.overlaps</code></pre>
 </div>
 </div>
 </div>
-<p>##English vs.&nbsp;Maths</p>
+</section>
+<section id="english-vs.-maths" class="level2">
+<h2 class="anchored" data-anchor-id="english-vs.-maths">English vs.&nbsp;Maths</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>exam_data, </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x=</span> MATHS, </span>
@@ -439,7 +467,9 @@ increasing max.overlaps</code></pre>
 </section>
 <section id="creating-composite-figure---pathwork-method" class="level2">
 <h2 class="anchored" data-anchor-id="creating-composite-figure---pathwork-method">Creating Composite Figure - pathwork method</h2>
-<p>##Two graphs</p>
+</section>
+<section id="two-graphs" class="level2">
+<h2 class="anchored" data-anchor-id="two-graphs">Two graphs</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
