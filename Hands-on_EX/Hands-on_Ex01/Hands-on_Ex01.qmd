@@ -1,6 +1,6 @@
 ---
 title: "Hands-on Exercise 1"
-author: "Dr. Kam Tin Seong"
+author: "Cher In Teo"
 ---
 
 # Getting Started
