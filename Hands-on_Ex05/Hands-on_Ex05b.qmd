@@ -1,0 +1,351 @@
+---
+title: "Hands-on_Ex05b"
+---
+
+# Visual Multivariate Analysis
+
+## Visual Multivariate Analysis with Heatmap
+
+Heatmaps are good for showing variance across multiple variables, revealing any patterns, displaying whether any variables are similar to each other, and for detecting if any correlations exist in-between them.
+
+### Installing and loading packages
+
+```{r}
+pacman::p_load(seriation, dendextend, heatmaply, tidyverse)
+```
+
+### Data Import
+
+```{r}
+wh <- read_csv("data/WHData-2018.csv")
+```
+
+### Data Preparation
+
+Change the rows by country name instead of row number.
+
+```{r}
+row.names(wh) <- wh$Country
+```
+
+### Transform data frame to matrix
+
+```{r}
+wh1 <- dplyr::select(wh, c(3, 7:12))
+wh_matrix <- data.matrix(wh)
+```
+
+## Static Heatmaps
+
+There are many R packages and functions which can be used to draw static heatmaps.
+
+### heatmap() of R Stats
+
+By default, heatmap() plots a cluster heatmap. The arguments Rowv=NA and Colv=NA are used to switch off the option of plotting the row and column dendrograms.
+
+```{r}
+wh_heatmap <- heatmap(wh_matrix,
+                      Rowv=NA, Colv=NA)
+```
+
+### Default heatmap()
+
+Reordering is done using clusterisation which calculates the distance between each pair of rows and columns and try to order them by similarity. The corresponding dendrogram is provided beside the heatmap.
+
+```{r}
+wh_heatmap <- heatmap(wh_matrix) 
+```
+
+#### To normalize the matrix
+
+This is needed because he Happiness Score variable has relatively larger values which makes the other variables with smaller values look similar.
+
+Note: Tje margins argument is used to ensure that the x-axis labels are displayed completely and, cexRow and cexCol arguments are used to define the font size used for y-axis and x-axis labels respectively.
+
+```{r}
+wh_heatmap <- heatmap(wh_matrix,
+                      scale="column",
+                      cexRow = 0.6, 
+                      cexCol = 0.8,
+                      margins = c(10, 4)) 
+```
+
+## Interactive Heatmaps
+
+Heatmaply is an R package for building interactive cluster heatmaps that can be shared online as a stand-alone HTML file.
+
+### Working with heatmaply
+
+```{r}
+heatmaply(mtcars)
+```
+
+#### To create an interactive heatmap
+
+```{r}
+heatmaply(wh_matrix[, -c(1, 2, 4, 5)])
+```
+
+### Data Transformation
+
+Data transformation is done to ensure all the variables have comparable values.
+
+The three main methods are detailed in the following sections.
+
+#### 1. Scaling Method
+
+Scaling (i.e.: subtract the mean and divide by the standard deviation) is used When all variables are came from or assumed to come from some normal distribution to bring them all close to the standard normal distribution.
+
+Each value would reflect the distance from the mean in units of standard deviation.
+
+```{r}
+heatmaply(wh_matrix[, -c(1, 2, 4, 5)],
+          scale = "column")
+```
+
+#### 2. Normalising Method (performed on data input)
+
+Normalising (i.e. subtracting the minimum and dividing by the maximum of all observations) is used to bring data to the 0 to 1 scale when variables in the data comes from possibly different (and non-normal) distributions.
+
+This preserves the shape of each variable’s distribution while making them easily comparable on the same “scale”.
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]))
+```
+
+#### 3. Percentising Method (performed on data input)
+
+This method is similar to ranking the variables, but instead of keeping the rank values, divide them by the maximal rank.
+
+This is done by using the ecdf of the variables on their own values, bringing each value to its empirical percentile.
+
+The benefit of the percentize function is that each value has a relatively clear interpretation as it is the percent of observations that got that value or below it.
+
+```{r}
+heatmaply(percentize(wh_matrix[, -c(1, 2, 4, 5)]))
+```
+
+### Hierarchical Clustering Algorithm
+
+The main arguments are detailed below.
+
+1)  distfun: function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist. The options “pearson”, “spearman” and “kendall” can be used to use correlation-based clustering, which uses as.dist(1 - cor(t(x))) as the distance metric (using the specified correlation method).
+2)  hclustfun: function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.
+3)  dist_method default is NULL, which results in “euclidean” to be used. It can accept alternative character strings indicating the method to be passed to distfun. By default distfun is “dist”” hence this can be one of “euclidean”, “maximum”, “manhattan”, “canberra”, “binary” or “minkowski”.
+4)  hclust_method default is NULL, which results in “complete” method to be used. It can accept alternative character strings indicating the method to be passed to hclustfun. By default hclustfun is hclust hence this can be one of “ward.D”, “ward.D2”, “single”, “complete”, “average” (= UPGMA), “mcquitty” (= WPGMA), “median” (= WPGMC) or “centroid” (= UPGMC).
+
+#### Manual approach
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          dist_method = "euclidean",
+          hclust_method = "ward.D")
+```
+
+#### Statistical approach
+
+##### To determine recommended clustering method
+
+```{r}
+wh_d <- dist(normalize(wh_matrix[, -c(1, 2, 4, 5)]), method = "euclidean")
+dend_expend(wh_d)[[3]]
+```
+
+The above shows that “average” method should be used because it gave the high optimum value.
+
+##### To determine optimal number of clusters (k)
+
+```{r}
+wh_clust <- hclust(wh_d, method = "average")
+num_k <- find_k(wh_clust)
+plot(num_k)
+```
+
+The above shows that k = 3 will be ideal. 
+
+##### Code chunk to be used
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          dist_method = "euclidean",
+          hclust_method = "average",
+          k_row = 3)
+```
+
+##### Seriation
+
+Heatmaply uses this to find an optimal ordering of rows and columns (i.e. optimise the Hamiltonian path length that is restricted by the dendrogram structure) so that sum of distances between each adjacent leaf (label) will be minimised.
+
+The Optimal Leaf Ordering (OLO) algorithm starts with the output of an agglomerative clustering algorithm and produces a unique ordering that flips the various branches of the dendrogram around so as to minimize the sum of dissimilarities between adjacent leaves.
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          seriate = "OLO")
+```
+
+The Gruvaeus and Wainer (GW) aims to do the same but uses a potentially faster heuristic.
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          seriate = "GW")
+```
+
+The "Mean" option gives the default output from heatmap functions in other packages e.g. ggplots().
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          seriate = "mean")
+```
+
+The "none" option gives the dendrograms without any rotation based on the data matrix.
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          seriate = "none")
+```
+
+##### Working with colour palettes
+
+The default color palette is viridis which can be changed. 
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          seriate = "none",
+          colors = Blues)
+```
+
+#### The Finishing Touch
+
+1) k_row is used to produce 5 groups.
+2) margins is used to change the top margin to 60 and row margin to 200.
+3) fontsizw_row and fontsize_col are used to change the font size for row and column labels to 4.
+4) main is used to write the main title of the plot.
+5) xlab and ylab are used to write the x-axis and y-axis labels respectively.
+
+```{r}
+heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
+          seriate = "none",
+          colors = Blues)
+```
+
+## Visual Multivariate Analysis with Parallel Coordinates Plot
+
+It is ideal for comparing multiple variables together and seeing the relationships between them.
+
+
+### Installing and loading packages
+
+```{r}
+pacman::p_load(GGally, parallelPlot, tidyverse)
+```
+
+### Data Import
+
+```{r}
+wh <- read_csv("data/WHData-2018.csv")
+```
+
+### Static Parallel Coordinates Plot
+
+#### Simple parallel coordinates plot
+
+```{r}
+ggparcoord(data = wh, 
+           columns = c(7:12))
+```
+
+#### Parallel coordinates plot with boxplot
+
+1) groupColumn argument is used to group the observations (i.e. parallel lines) by using a single variable (i.e. Region) and colour the parallel coordinates lines by region name.
+2) scale argument is used to scale the variables in the parallel coordinate plot by using uniminmax method. The method univariately scale each variable so the minimum of the variable is zero and the maximum is one.
+3) alphaLines argument is used to reduce the intensity of the line colour to 0.2. The permissible value range is between 0 to 1.
+4) boxplot argument is used to turn on the boxplot by using logical TRUE. The default is FALSE.
+5) title argument is used to provide the parallel coordinates plot a title.
+
+```{r}
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Parallel Coordinates Plot of World Happines Variables")
+```
+
+#### Parallel coordinates plot with facet
+
+```{r}
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
+  facet_wrap(~ Region)
+```
+
+#### Rotating x-axis text label
+
+```{r}
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
+  facet_wrap(~ Region) + 
+  theme(axis.text.x = element_text(angle = 30))
+```
+
+#### Adjusting the rotated x-axis text label
+
+```{r}
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
+  facet_wrap(~ Region) + 
+  theme(axis.text.x = element_text(angle = 30, hjust=1))
+```
+
+### Plotting Interactive Parallel Coordinates Plot - parallelPlot method
+
+### Basic plot
+
+```{r}
+wh <- wh %>%
+  select("Happiness score", c(7:12))
+parallelPlot(wh,
+             width = 320,
+             height = 250)
+```
+
+### Rotate axis label
+
+```{r}
+parallelPlot(wh,
+             rotateTitle = TRUE)
+```
+
+### Changing the colour scheme
+
+```{r}
+parallelPlot(wh,
+             continuousCS = "YlOrRd",
+             rotateTitle = TRUE)
+```
+
+### Parallel coordinates plot with histogram
+
+```{r}
+histoVisibility <- rep(TRUE, ncol(wh))
+parallelPlot(wh,
+             rotateTitle = TRUE,
+             histoVisibility = histoVisibility)
+```
+

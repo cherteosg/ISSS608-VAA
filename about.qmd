@@ -2,7 +2,7 @@
 title: "About"
 ---
 
-About this site
+Code will be shown for each of the Hands-on exercises as shown below (in light grey). The output will be displayed after that.
 
 ```{r}
 1 + 1

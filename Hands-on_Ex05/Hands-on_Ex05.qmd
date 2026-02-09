@@ -1,0 +1,108 @@
+---
+title: "Hands-on_Ex05"
+---
+
+# Creating Ternary Plot
+
+## Installing and loading packages
+
+```{r}
+pacman::p_load(plotly, ggtern, tidyverse)
+```
+
+## Data import
+
+```{r}
+pop_data <- read_csv("popdata2000to2018.csv")
+```
+
+
+## Data Preparation
+
+The data used for this exercise will be population data for Singapore residents from June 2000 to 2018.
+
+Three new measures will be derived - young, active and old.
+
+```{r}
+agpop_mutated <- pop_data %>%
+  mutate(`Year` = as.character(Year))%>%
+  spread(AG, Population) %>%
+  mutate(YOUNG = rowSums(.[4:8]))%>%
+  mutate(ACTIVE = rowSums(.[9:16]))  %>%
+  mutate(OLD = rowSums(.[17:21])) %>%
+  mutate(TOTAL = rowSums(.[22:24])) %>%
+  filter(Year == 2018)%>%
+  filter(TOTAL > 0)
+```
+
+## Static Ternary Diagram
+
+### Plotting the diagram
+
+```{r}
+ggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) +
+  geom_point()
+```
+
+### Building the plot
+
+```{r}
+ggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +
+  geom_point() +
+  labs(title="Population structure, 2015") +
+  theme_rgbw()
+```
+
+## Interactive Ternary Diagram
+
+### Plotting the diagram
+
+#### Function for creating annotation object
+
+```{r}
+label <- function(txt) {
+  list(
+    text = txt, 
+    x = 0.1, y = 1,
+    ax = 0, ay = 0,
+    xref = "paper", yref = "paper", 
+    align = "center",
+    font = list(family = "serif", size = 15, color = "white"),
+    bgcolor = "#b3b3b3", bordercolor = "black", borderwidth = 2
+  )
+}
+```
+
+#### Function for axis formatting
+
+```{r}
+axis <- function(txt) {
+  list(
+    title = txt, tickformat = ".0%", tickfont = list(size = 10)
+  )
+}
+
+ternaryAxes <- list(
+  aaxis = axis("Young"), 
+  baxis = axis("Active"), 
+  caxis = axis("Old")
+)
+```
+
+#### Initiating a plot_ly visualization
+
+```{r}
+plot_ly(
+  agpop_mutated, 
+  a = ~YOUNG, 
+  b = ~ACTIVE, 
+  c = ~OLD, 
+  color = I("black"), 
+  type = "scatterternary"
+) %>%
+  layout(
+    annotations = label("Ternary Markers"), 
+    ternary = ternaryAxes
+  )
+```
+
