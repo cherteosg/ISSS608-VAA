@@ -16,7 +16,6 @@ pacman::p_load(plotly, ggtern, tidyverse)
 pop_data <- read_csv("popdata2000to2018.csv")
 ```
 
-
 ## Data Preparation
 
 The data used for this exercise will be population data for Singapore residents from June 2000 to 2018.
@@ -105,4 +104,3 @@ plot_ly(
     ternary = ternaryAxes
   )
 ```
-
