@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "ISSS608-VAA",
     "section": "",
-    "text": "Welcome to ISSS608 Visual Analytics and Applications. In this website, you will find the weekly hands-on exercises prepared for this course."
+    "text": "Welcome to ISSS608 Visual Analytics and Applications. In this website, you will find the weekly hands-on exercises and take home exercises prepared for this course."
   },
   {
     "objectID": "Hands-on_Ex05b/Hands-on_Ex05b.html",
@@ -915,5 +915,390 @@
     "title": "Hands-on_Ex05c",
     "section": "",
     "text": "library(d3treeR)\n\n\n\n\ntreemap() is used to build a treemap by using selected variables in condominium data.frame. The treemap created is save as object called tm.\n\ninstall.packages(\"treemap\")\n\nWarning: package 'treemap' is in use and will not be installed\n\n\n\nlibrary(treemap)\n\n\ntm &lt;- treemap(realis2018_summarised,\n        index=c(\"Planning Region\", \"Planning Area\"),\n        vSize=\"Total Unit Sold\",\n        vColor=\"Median Unit Price ($ psm)\",\n        type=\"value\",\n        title=\"Private Residential Property Sold, 2017\",\n        title.legend = \"Median Unit Price (S$ per sq. m)\"\n        )\n\n\n\n\n\n\n\n\nd3tree() is used to build an interactive treemap.\n\nd3tree(tm,rootname = \"Singapore\" )"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html",
+    "title": "Take-home_Ex01a",
+    "section": "",
+    "text": "#Load Packages\npacman::p_load(tidyverse, readxl, ggrepel, patchwork, ggthemes, hrbrthemes, ggiraph, plotly, readxl, gifski, gapminder, gganimate, ggdist, ggridges, ggstatsplot, plotly, crosstalk, DT, colorspace,gganimate, FunnelPlotR, knitr)\n#Import Data\nsurvey &lt;- read_excel(\"data/Data.xlsx\")\n#Data Transformation"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#rename-columns",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#rename-columns",
+    "title": "Take-home_Ex01a",
+    "section": "Rename Columns",
+    "text": "Rename Columns\n\nnames(survey)[c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)] &lt;- c(\"Province\",\"Gender\", \"Race\", \"Industry\", \"Quintile\", \"Income\", \"Agri\", \"SvcInd\", \"Others\", \"Education\", \"Training\", \"Credit\", \"Technology\")"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#rename-values",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#rename-values",
+    "title": "Take-home_Ex01a",
+    "section": "Rename Values",
+    "text": "Rename Values\n\nsurvey &lt;- survey %&gt;%\n  mutate(Province = recode(Province, \n                        \"1\" = \"Tuyen Quang\", \n                        \"2\" = \"Quang Ninh\",\n                        \"3\" = \"Ha Giang\",\n                        \"4\" = \"Yen Bai\", \n                        \"5\" = \"Bac Giang\"))\n\n\nsurvey &lt;- survey %&gt;%\n  mutate(Gender = recode(Gender, \n                        \"1\" = \"Male\", \n                        \"2\" = \"Female\"))\n\n\nsurvey &lt;- survey %&gt;%\n  mutate(Race = recode(Race, \n                        \"1\" = \"King\", \n                        \"2\" = \"Minorities\"))\n\n\nsurvey &lt;- survey %&gt;%\n  mutate(Industry = recode(Industry, \n                        \"1\" = \"Agri\", \n                        \"2\" = \"SvcInd\",\n                        \"3\" = \"Others\"))\n\n\nsurvey &lt;- survey %&gt;%\n  mutate(Education = recode(Education, \n                        \"1\" = \"Primary\", \n                        \"2\" = \"Lower Sec\",\n                        \"3\" = \"Upper Sec\",\n                        \"4\" = \"Others\",\n                        .default = \"No Response\"))\n\n\nsurvey &lt;- survey %&gt;%\n  mutate(Training = recode(Training, \n                        \"1\" = \"Short\", \n                        \"2\" = \"Long\",\n                        .missing = \"0\"))\n\n\nsurvey &lt;- survey %&gt;%\n  mutate(Credit = recode(Credit, \n                        \"1\" = \"No\", \n                        \"2\" = \"Yes\"))\n\n\nsurvey &lt;- survey %&gt;%\n  mutate(Technology = recode(Technology, \n                        \"1\" = \"Low\", \n                        \"2\" = \"Adequate\"))\n\n\nView(survey)\n\n#Key Observation 1 - Income"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#comparison-by-province",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#comparison-by-province",
+    "title": "Take-home_Ex01a",
+    "section": "Comparison by Province",
+    "text": "Comparison by Province\n\nIncomeComparison &lt;- survey %&gt;%\n  group_by(Province) %&gt;%\n  summarize(Total = sum(Income, na.rm = TRUE))\n\n\nggplot(IncomeComparison, aes(x = reorder(Province, -Total), y = Total, fill = Province)) +\n  geom_col() + \n  scale_fill_brewer(palette = \"Blues\")+\n  theme_minimal() +\n  labs(title = \"Total Income by Province\",\n       x = \"Province\",\n       y = \"Income\") +\n  theme(axis.text.x = element_text(angle = 45, hjust = 1),\n  panel.grid.major = element_blank(), \n  panel.grid.minor = element_blank()\n)"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#review-of-average-income",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#review-of-average-income",
+    "title": "Take-home_Ex01a",
+    "section": "Review of average income",
+    "text": "Review of average income\n\nAverage &lt;- survey %&gt;%\n  group_by(Province) %&gt;%\n  summarize(\n    avg_income = mean(Income, na.rm = TRUE),\n    sample_size = n()\n  ) %&gt;%\n  arrange(desc(avg_income))\n\n\nggplot(Average, aes(x = reorder(Province, avg_income), y = avg_income)) +\n  geom_col(fill = \"#2c3e50\") +\n  coord_flip() +              \n  theme_minimal() +\n  labs(\n    title = \"Average Monthly Income by Province\",\n    x = \"Province\",\n    y = \"Average Income (Mean)\"\n  )"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#income-distribution",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#income-distribution",
+    "title": "Take-home_Ex01a",
+    "section": "Income Distribution",
+    "text": "Income Distribution\n\nggplot(survey, aes(x = Province, fill = factor(Quintile))) +\n  geom_bar(position = \"stack\") + \n  scale_fill_brewer(palette = \"Blues\") +\n  theme_minimal() +\n  labs(title = \"Total Count of People by Quintile and Province\",\n       subtitle = \"Bar height represents total sample size\",\n       x = \"Province\",\n       y = \"Number of Respondents\",\n       fill = \"Quintile\") +\n  theme(\n    axis.text.x = element_text(angle = 45, hjust = 1),\n    panel.grid.major = element_blank(),\n    panel.grid.minor = element_blank()\n  )"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#violin-plot",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#violin-plot",
+    "title": "Take-home_Ex01a",
+    "section": "Violin Plot",
+    "text": "Violin Plot\n\nsurvey_clean &lt;- survey %&gt;% \n  filter(!is.na(Quintile))\nggplot(survey_clean, aes(x = reorder(Province, Quintile, FUN = median), \n                         y = Quintile, \n                         fill = Province)) +\n  geom_violin(draw_quantiles = 0.5, \n              trim = FALSE, \n              alpha = 0.8, \n              bw = 0.5, \n              na.rm = TRUE) +\n  scale_y_reverse(breaks = 1:5, labels = c(\"1 (Top)\", \"2\", \"3\", \"4\", \"5 (Lowest)\")) +\n  coord_cartesian(ylim = c(5.5, 0.5)) +\n  scale_fill_brewer(palette = \"Blues\") +\n  theme_minimal() +\n  labs(\n    title = \"Income Disparity\",\n    x = \"Province\",\n    y = \"Income Quintile\"\n  ) +\n  theme(axis.text.x = element_text(angle = 45, hjust = 1),\n    legend.position = \"none\",\n    panel.grid.minor = element_blank()\n  )\n\nWarning: The `draw_quantiles` argument of `geom_violin()` is deprecated as of ggplot2\n4.0.0.\nℹ Please use the `quantiles.linetype` argument instead.\n\n\n\n\n\n\n\n\n\n\nggplot(survey_clean, aes(x = reorder(Province, Quintile, FUN = median), \n                         y = Quintile, \n                         fill = Province)) +\n  geom_violin(\n    draw_quantiles = 0.5, \n    scale = \"width\", \n    width = 0.9,      \n    trim = TRUE,       \n    alpha = 0.8, \n    bw = 0.5, \n    na.rm = TRUE\n  ) +\n  scale_y_reverse(breaks = 1:5, \n                  labels = c(\"1 (Top)\", \"2\", \"3\", \"4\", \"5 (Lowest)\"),\n                  limits = c(5, 1)) +\n  scale_fill_brewer(palette = \"Blues\") +\n  theme_minimal() +\n  labs(\n    title = \"Income Disparity\",\n    x = NULL,         # This removes the X-axis name (\"Province\")\n    y = \"Income Quintile\"\n  ) +\n  theme(\n    legend.position = \"none\",\n    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),\n    panel.grid.major = element_blank(), \n    panel.grid.minor = element_blank(),\n    axis.line = element_line(color = \"grey80\")\n  )"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#source-of-income",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#source-of-income",
+    "title": "Take-home_Ex01a",
+    "section": "Source of Income",
+    "text": "Source of Income\n\nsurvey_summary &lt;- survey %&gt;%\n  group_by(Province) %&gt;%\n  summarize(\n    Agriculture = sum(Agri, na.rm = TRUE),\n    ServicesIndustrial = sum(SvcInd, na.rm = TRUE),\n    Others = sum(Others, na.rm = TRUE)\n  ) %&gt;%\n  pivot_longer(cols = c(Agriculture, ServicesIndustrial, Others), \n               names_to = \"Source\", \n               values_to = \"Amount\")\n\n\nggplot(survey_summary, aes(x = Province, y = Amount, fill = Source)) +\n  geom_col(position = \"fill\", alpha = 0.9) +\n  scale_y_continuous(labels = scales::percent) +\n  scale_fill_brewer(palette = \"Blues\") +\n  theme_minimal() +\n  labs(\n    title = \"Sources of Income\",\n    x = NULL,\n    y = \"Percentage\",\n    fill = \"Income Source\"\n  ) +\n  theme(\n    axis.text.x = element_text(angle = 45, hjust = 1),\n    panel.grid.minor = element_blank())"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#check-for-missing-values",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#check-for-missing-values",
+    "title": "Take-home_Ex01a",
+    "section": "Check for Missing Values",
+    "text": "Check for Missing Values\n\n\nCPRO CGEN CRAC CJOB CQUI TEIN TAIN TSII TOIN FEDU FVTP FCRA FTAP LHO1 LHO2 LHO3 \n   0    0    0   49    4    1    1    6    0   23   23    2  102  512  402  616 \nLHO4 LCRE LSAV LWDA PPO1 PPO2 PPO3 PPO4 PPO5 ARO1 ARO2 ARO3 ARO4 ARO5 \n 653  636  520  160  209  230   88   99  106  102  102   89  111  108"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#education-impact--",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#education-impact--",
+    "title": "Take-home_Ex01a",
+    "section": "Education Impact -",
+    "text": "Education Impact -\n\nsurvey_clean &lt;- survey %&gt;%\n  filter(!is.na(Education), !is.na(Income)) %&gt;%\n  mutate(Education = factor(Education, \n                            levels = c(\"Primary\", \"LowerSec\", \"UpperSec\", \"Others\")))"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#credit-impact",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#credit-impact",
+    "title": "Take-home_Ex01a",
+    "section": "Credit Impact",
+    "text": "Credit Impact\n\nsurvey %&gt;%\n  filter(!is.na(Credit), !is.na(Quintile)) %&gt;% \n  ggplot(aes(x = Quintile, y = Credit, fill = Credit)) +\n  geom_density_ridges(\n    scale = 1.2, \n    alpha = 0.7, \n    bw = 0.5, \n    rel_min_height = 0.01,\n    color = NA\n  ) +\n  scale_x_reverse(breaks = 1:5, labels = c(\"1 (Top)\", \"2\", \"3\", \"4\", \"5 (Low)\")) +\n  scale_fill_manual(values = c(\"Yes\" = \"#AED6F1\", \"No\" = \"pink\")) +\n  theme_minimal() +\n  labs(\n    title = \"Impact of Credit Accessibility\",\n    x = \"Income Quintile\",\n    y = \"Has Access to Credit?\"\n  ) +\n  theme(\n    legend.position = \"none\",\n    panel.grid.major = element_blank(),\n    panel.grid.minor = element_blank(),\n    axis.text.y = element_text(face = \"bold\", size = 12),\n    axis.line.x = element_line(color = \"grey80\")\n  )\n\nWarning in geom_density_ridges(scale = 1.2, alpha = 0.7, bw = 0.5,\nrel_min_height = 0.01, : Ignoring unknown parameters: `bw`\n\n\nPicking joint bandwidth of 0.299\n\n\n\n\n\n\n\n\n\n\nsurvey %&gt;%\nfilter(Training %in% c(\"Long\", \"Short\"), \n         !is.na(Quintile)) %&gt;%\n  ggplot(aes(x = Quintile, y = Training, fill = Training)) +\n  geom_density_ridges(\n    scale = 1.2, \n    alpha = 0.7, \n    bw = 0.5, \n    rel_min_height = 0.01,\n    color = NA\n  ) +\n  scale_x_reverse(breaks = 1:5, labels = c(\"1 (Top)\", \"2\", \"3\", \"4\", \"5 (Low)\")) +\n  scale_fill_manual(values = c(\"Long\" = \"#AED6F1\", \"Short\" = \"pink\")) +\n  theme_minimal() +\n  theme(\n    panel.grid.major = element_blank(),\n    panel.grid.minor = element_blank()\n  )\n\nWarning in geom_density_ridges(scale = 1.2, alpha = 0.7, bw = 0.5,\nrel_min_height = 0.01, : Ignoring unknown parameters: `bw`\n\n\nPicking joint bandwidth of 0.257"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01a.html#technology-impact",
+    "href": "Take-home_Ex01/Take-home_Ex01a.html#technology-impact",
+    "title": "Take-home_Ex01a",
+    "section": "Technology Impact",
+    "text": "Technology Impact\n\nsurvey %&gt;%\n  mutate(\n    Technology = na_if(Technology, \"0\"),\n    Technology = na_if(Technology, \"\"),\n    Technology = fct_na_value_to_level(as.factor(Technology), level = \"None\"),\n    Technology = fct_relevel(Technology, \"None\", \"Low\", \"Adequate\")\n  ) %&gt;%\n  filter(!is.na(Agri), Agri&gt; 0) %&gt;% \n  ggplot(aes(x = Agri, y = Technology, fill = Technology)) +\n  geom_density_ridges(\n    scale = 1.3, \n    alpha = 0.7, \n    color = NA, \n    rel_min_height = 0.01\n  ) +\n  scale_fill_manual(values = c(\n    \"None\"     = \"#D5D8DC\", # Neutral Grey\n    \"Low\"      = \"#AED6F1\", # Your Light Blue\n    \"Adequate\" = \"#2E86C1\"  # Darker Blue for high impact\n  )) +\n  scale_x_continuous(labels = scales::label_dollar(), expand = c(0, 0)) +\n  theme_minimal() +\n  labs(\n    title = \"Impact of Technology\",\n    subtitle = \"Comparing None, Low, and Adequate technology usage\",\n    x = \"Agricultural Income\",\n    y = NULL\n  ) +\n  theme(\n    legend.position = \"none\",\n    panel.grid = element_blank(),\n    axis.text.y = element_text(face = \"bold\", size = 11),\n    axis.line.x = element_line(color = \"grey80\")\n  )\n\nPicking joint bandwidth of 2.99\n\n\n\n\n\n\n\n\n\n\nRaincloud\n\nsurvey %&gt;%\n  mutate(Technology = fct_relevel(Technology, \"None\", \"Low\", \"Adequate\")) %&gt;%\nggplot(aes(x = Technology, y = Agri, fill = Technology)) +\n  # The \"Cloud\": Half-density plot\n  stat_halfeye(adjust = .5, width = .6, .width = 0, justification = -.3, point_colour = NA) +\n  # The \"Rain\": Jittered points\n  geom_dots(side = \"left\", justification = 1.1, binwidth = unit(0.02, \"npc\"), alpha = 0.5) +\n  scale_fill_manual(values = c(\"None\" = \"grey80\", \"Low\" = \"#AED6F1\", \"Adequate\" = \"#2E86C1\")) +\n  theme_minimal() +\n  theme(panel.grid = element_blank()) +\n  labs(title = \"Tech Impact: Income Distribution & Individual Data\")\n\nWarning: There was 1 warning in `mutate()`.\nℹ In argument: `Technology = fct_relevel(Technology, \"None\", \"Low\",\n  \"Adequate\")`.\nCaused by warning:\n! 1 unknown level in `f`: None\n\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`stat_slabinterval()`).\n\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`geom_dotsinterval()`).\n\n\nWarning: The provided binwidth will cause dots to overflow the boundaries of the\ngeometry.\n→ Set `binwidth = NA` to automatically determine a binwidth that ensures dots\n  fit within the bounds,\n→ OR set `overflow = \"compress\"` to automatically reduce the spacing between\n  dots to ensure the dots fit within the bounds,\n→ OR set `overflow = \"keep\"` to allow dots to overflow the bounds of the\n  geometry without producing a warning.\nℹ For more information, see the documentation of the `binwidth` and `overflow`\n  arguments of `?ggdist::geom_dots()` or the section on constraining dot sizes\n  in vignette(\"dotsinterval\") (`vignette(ggdist::dotsinterval)`).\n\n\n\n\n\n\n\n\n\n\nggplot(survey, aes(x = Technology, y = Agri, fill = Technology)) +\n  geom_boxplot(width = 0.6, alpha = 0.7, outlier.size = 1) +\n  facet_wrap(~Province, nrow = 1) + # One small box per province\n  scale_y_continuous(labels = scales::label_dollar()) +\n  theme_minimal() +\n  theme(panel.grid = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1))\n\nWarning: Removed 1 row containing non-finite outside the scale range\n(`stat_boxplot()`).\n\n\n\n\n\n\n\n\n\n\nsurvey %&gt;%\n  mutate(\n    Technology = na_if(Technology, \"0\"),\n    Technology = na_if(Technology, \"\"),\n    Technology = fct_na_value_to_level(as.factor(Technology), level = \"None\"),\n    Technology = fct_relevel(Technology, \"None\", \"Low\", \"Adequate\")\n  ) %&gt;%\n  filter(!is.na(Province), Province != \"\", Agri&gt; 0) %&gt;% \n  ggplot(aes(x = Technology, y = Agri, fill = Technology)) +\n  geom_boxplot(width = 0.6, alpha = 0.7, outlier.alpha = 0.3) +\n  facet_wrap(~Province, nrow = 1) + \n  scale_fill_manual(values = c(\n    \"None\"     = \"#D5D8DC\", # Grey\n    \"Low\"      = \"#AED6F1\", # Light Blue\n    \"Adequate\" = \"#2E86C1\"  # Dark Blue\n  )) +\n  scale_y_continuous(labels = scales::label_dollar()) +\n  theme_minimal() +\n  labs(\n    title = \"Agricultural Income by Technology\",\n    x = NULL,\n    y = \"Annual Agricultural Income\"\n  ) +\n  theme(\n    legend.position = \"none\",\n    panel.grid.major.x = element_blank(), # Cleaner look\n    panel.grid.minor = element_blank(),\n    axis.text.x = element_text(angle = 45, hjust = 1, face = \"bold\"),\n    strip.background = element_rect(fill = \"grey\", color = NA), # Province labels\n    strip.text = element_text(face = \"bold\")\n  )\n\n\n\n\n\n\n\n\n\nsurvey %&gt;%\n  mutate(\n    Technology = na_if(Technology, \"0\"),\n    Technology = na_if(Technology, \"\"),\n    Technology = fct_na_value_to_level(as.factor(Technology), level = \"None\"),\n    Technology = fct_relevel(Technology, \"None\", \"Low\", \"Adequate\")\n  ) %&gt;%\n  filter(!is.na(Province), Province != \"\") %&gt;% \n  group_by(Province, Technology) %&gt;%\n  summarise(Total_Agri = sum(Agri, na.rm = TRUE), .groups = 'drop') %&gt;%\n  ggplot(aes(x = Province, y = Total_Agri, fill = Technology)) +\n  geom_col(position = position_dodge(preserve = \"single\"), width = 0.7) +\n  scale_fill_manual(values = c(\n    \"None\"     = \"#D5D8DC\", \n    \"Low\"      = \"#AED6F1\", \n    \"Adequate\" = \"#2E86C1\"\n  )) +\n  scale_y_continuous(labels = scales::label_dollar(scale = 1/1e3, suffix = \"K\")) +\n  theme_minimal() +\n  labs(\n    title = \"Total Agricultural Wealth Generated by Technology Level\",\n    subtitle = \"Aggregated income across 5 provinces (Income in Thousands)\",\n    x = NULL,\n    y = \"Sum of Agricultural Income\",\n    fill = \"Tech Level\"\n  ) +\n  theme(\n    panel.grid.major.x = element_blank(),\n    panel.grid.minor = element_blank(),\n    axis.text.x = element_text(face = \"bold\"),\n    legend.position = \"top\"\n  )\n\n\n\n\n\n\n\n\n\nsurvey %&gt;%\n  filter(Province == \"Ha Giang\") %&gt;%\n  group_by(Technology) %&gt;%\n  summarise(\n    Total_Income = sum(Agri, na.rm = TRUE),\n    Average_Income = mean(Agri, na.rm = TRUE),\n    Number_of_Farmers = n()\n  )\n\n# A tibble: 3 × 4\n  Technology Total_Income Average_Income Number_of_Farmers\n  &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt;             &lt;int&gt;\n1 Adequate           1106           25.7                43\n2 Low                2212           24.6                90\n3 &lt;NA&gt;                181           22.6                 8"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html",
+    "href": "Take-home_Ex01/Take-home_Ex02.html",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "",
+    "text": "#Packages\npacman::p_load(tidyverse,readxl,ggridges,ggdist,scales)\n#Data\nsurvey &lt;- read_excel(\"data/Data.xlsx\") %&gt;%\n  select(1:13)\n#Data Management\nsurvey &lt;- survey %&gt;%\nsetNames(c(\"Province\",\"Gender\",\"Race\",\"Industry\",\"Quintile\", \"Income\",\"Agri\",\"SvcInd\",\"Others\",\"Education\",\"Training\",\"Credit\",\"Technology\")) %&gt;%\n\nmutate(\nProvince = recode(Province,\n    \"1\"=\"Tuyen Quang\",\n    \"2\"=\"Quang Ninh\",\n    \"3\"=\"Ha Giang\",\n    \"4\"=\"Yen Bai\",\n    \"5\"=\"Bac Giang\"),\nGender   = recode(Gender, \"1\"=\"Male\", \"2\"=\"Female\"),\nRace     = recode(Race, \"1\"=\"King\", \"2\"=\"Minority\"),\nIndustry = recode(Industry,\n    \"1\"=\"Agri\",\n    \"2\"=\"SvcInd\",\n    \"3\"=\"Others\"),\nEducation = recode(Education,\n    \"1\"=\"Primary\",\n    \"2\"=\"Lower Sec\",\n    \"3\"=\"Upper Sec\",\n    \"4\"=\"Others\",\n    .default = NA_character_),\nTraining  = recode(Training, \n    \"1\"=\"Short\",\n    \"2\"=\"Long\"),\nCredit    = recode(Credit, \n    \"1\"=\"No\",\n    \"2\"=\"Yes\"),\nTechnology = recode(Technology,\n    \"1\"=\"Low\",\n    \"2\"=\"Adequate\",\n    .default = \"None\"\n    ) %&gt;%\n    factor(levels = c(\"None\",\"Low\",\"Adequate\")))"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#income-by-province",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#income-by-province",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Income by Province",
+    "text": "Income by Province"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#income-high-level-summary",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#income-high-level-summary",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Income High Level Summary",
+    "text": "Income High Level Summary"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#total-income",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#total-income",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Total Income",
+    "text": "Total Income"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#average-income",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#average-income",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Average Income",
+    "text": "Average Income"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#income-quintile",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#income-quintile",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Income Quintile",
+    "text": "Income Quintile"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#impact-of-education",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#impact-of-education",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Impact of Education",
+    "text": "Impact of Education"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#impact-of-credit-access",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#impact-of-credit-access",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Impact of Credit Access",
+    "text": "Impact of Credit Access"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#impact-of-technology",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#impact-of-technology",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Impact of Technology",
+    "text": "Impact of Technology"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#version-2",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#version-2",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Version 2",
+    "text": "Version 2\n\n\n\n\n\n\n\n\n\n#RainCloud"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#credit-versus-income",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#credit-versus-income",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Credit versus Income",
+    "text": "Credit versus Income"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#income-inequality",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#income-inequality",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Income Inequality",
+    "text": "Income Inequality"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex02.html#correlogram",
+    "href": "Take-home_Ex01/Take-home_Ex02.html#correlogram",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Correlogram",
+    "text": "Correlogram"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html",
+    "href": "Take-home_Ex01/Take-home_Ex01.html",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "",
+    "text": "This is a study on rural income of informal labourers from five provinces located in the mountainous region of north Vietnam: Tuyen Quang, Quang Ninh, Ha Giang, Yen Bai, and Bac Giang."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#income-analysis",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#income-analysis",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Income Analysis",
+    "text": "Income Analysis\n\nData Cleansing\nThe dataset provided has 30 columns but only 13 columns will be used in this study. The code below is used to produce a clean subset of the original data for use in analysis and to remove any rows with missing income data. Direct income variables are grouped as ‘incomevar’.\n\nincomevar &lt;- c(\"Quintile\", \"Income\", \"Agri\", \"SvcInd\", \"Others\")\nsurvey_clean &lt;- survey %&gt;%\n  select(Province, all_of(incomevar), Education, Training, Credit, Technology) %&gt;%\n  filter(!is.na(Income))"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#updated",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#updated",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Updated",
+    "text": "Updated"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#handling-of-missing-values-for-targeted-variables",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#handling-of-missing-values-for-targeted-variables",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Handling of missing values for targeted variables",
+    "text": "Handling of missing values for targeted variables\n\nincomevar &lt;- c(\"Quintile\", \"Income\", \"Agri\", \"SvcInd\", \"Others\")\nsurvey_clean &lt;- survey %&gt;%\n  select(Province, all_of(incomevar), Education, Training, Credit, Technology) %&gt;%\n  filter(!is.na(Income))"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#by-province",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#by-province",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "By Province",
+    "text": "By Province"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#average",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#average",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Average",
+    "text": "Average\n\n\n\n\n\n\n\n\n\n##Quintile\n\n\n\n\n\n\n\n\n\n##Component"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#technology-vs-agri-income",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#technology-vs-agri-income",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Technology vs Agri Income",
+    "text": "Technology vs Agri Income"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#tech-plus-income-plus-agri",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#tech-plus-income-plus-agri",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Tech plus Income plus Agri",
+    "text": "Tech plus Income plus Agri"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#income-high-level-summary",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#income-high-level-summary",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Income High Level Summary",
+    "text": "Income High Level Summary"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#average-income",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#average-income",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Average Income",
+    "text": "Average Income"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#income-quintile",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#income-quintile",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Income Quintile",
+    "text": "Income Quintile"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#impact-of-education",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#impact-of-education",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Impact of Education",
+    "text": "Impact of Education"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#impact-of-credit-access",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#impact-of-credit-access",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Impact of Credit Access",
+    "text": "Impact of Credit Access"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#impact-of-technology",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#impact-of-technology",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Impact of Technology",
+    "text": "Impact of Technology"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#version-2",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#version-2",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Version 2",
+    "text": "Version 2\n\n\n\n\n\n\n\n\n\n#RainCloud"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#credit-versus-income",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#credit-versus-income",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Credit versus Income",
+    "text": "Credit versus Income"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#income-inequality",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#income-inequality",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Income Inequality",
+    "text": "Income Inequality"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#correlogram",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#correlogram",
+    "title": "A Study of Rural Income in North Vietnam",
+    "section": "Correlogram",
+    "text": "Correlogram"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#overview",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#overview",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "",
+    "text": "This is a study on rural income of informal labourers from five provinces located in the mountainous region of north Vietnam: Tuyen Quang, Quang Ninh, Ha Giang, Yen Bai, and Bac Giang."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#setting-the-scene",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#setting-the-scene",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Setting the scene",
+    "text": "Setting the scene\nOur goal is to improve rural living conditions by using visual data insights to identify catalysts of income growth and socio-economic development.\nThis will be done through survey analysis, which is the process of transforming raw survey data into decision-relevant insights. For the analytical framework of this study, the survey respondents from each province will be treated as representative of the broader population."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#the-design-tool",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#the-design-tool",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "The Design Tool",
+    "text": "The Design Tool\nWe will be using the following tidyverse family of packages and prepare data visualization using ggplot2 and its extensions.\n\npacman::p_load(tidyverse,readxl,ggridges,ggdist,scales)"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#the-data",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#the-data",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "The Data",
+    "text": "The Data\nThe target group for this study are informal labourers from the following provinces in northern Vietnam: Tuyen Quang, Quang Ninh, Ha Giang, Yen Bai and Bac Giang.\nData collected covered demographics, income, education and training, credit accessibility, technological application as well as living conditions and feedback on policies and opinions. We will be using 13 of the\n750 Survey questionnaires were distributed of which 725 were used to create the dataset, comprising of 30 columns and 725 rows of data.\n\nsurvey &lt;- read_excel(\"data/Data.xlsx\") %&gt;%\n  select(1:13)\n\n\nData Preparation\nThe original dataset uses column names such as “CPRO” and “TEIN” is not intuitive and requires interpretation.\nPertinent variables which will be used for data visualization were selectd and renamed as seen in below code.\nValues of these variables were also renamed and coded as required to facilitate the onward data analytics process.\n\nsurvey &lt;- survey %&gt;%\nsetNames(c(\"Province\",\"Gender\",\"Race\",\"Industry\",\"Quintile\", \"Income\",\"Agri\",\"SvcInd\",\"Others\",\"Education\",\"Training\",\"Credit\",\"Technology\")) %&gt;%\n\nmutate(\nProvince = recode(Province,\n    \"1\"=\"Tuyen Quang\",\n    \"2\"=\"Quang Ninh\",\n    \"3\"=\"Ha Giang\",\n    \"4\"=\"Yen Bai\",\n    \"5\"=\"Bac Giang\"),\nGender   = recode(Gender, \"1\"=\"Male\", \"2\"=\"Female\"),\nRace     = recode(Race, \"1\"=\"King\", \"2\"=\"Minority\"),\nIndustry = recode(Industry,\n    \"1\"=\"Agri\",\n    \"2\"=\"SvcInd\",\n    \"3\"=\"Others\"),\nEducation = recode(Education,\n    \"1\"=\"Primary\",\n    \"2\"=\"Lower Sec\",\n    \"3\"=\"Upper Sec\",\n    \"4\"=\"Others\",\n    .default = NA_character_),\nTraining  = recode(Training, \n    \"1\"=\"Short\",\n    \"2\"=\"Long\"),\nCredit    = recode(Credit, \n    \"1\"=\"No\",\n    \"2\"=\"Yes\"),\nTechnology = recode(Technology,\n    \"1\"=\"Low\",\n    \"2\"=\"Adequate\",\n    .default = \"None\"\n    ) %&gt;%\n    factor(levels = c(\"None\",\"Low\",\"Adequate\")))"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#income-across-the-provinces",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#income-across-the-provinces",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Income Across the Provinces",
+    "text": "Income Across the Provinces\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThe income levels in the provinces are compared using horizontal bar charts. It is ideal for comparing categorical data (i.e.the provinces) across a metric (i.e. income).\nBac Giang, has recorded the highest total income and average income of the provinces. This is largely due to its strategic locaion in the Red River Delta near to Hanoi.\nOn the other hand, Yen Bai is characterized by mountainous terrain covering more than 80% of its land area, making it challenging for economic development and infrastructure growth."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#income-disparity",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#income-disparity",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Income Disparity",
+    "text": "Income Disparity\n\n\n\n\n\n\n\n\n\nNext we look at the income disparity across and within the provinces using a stacked bar chart. “Quintile” is used instead of “Income” for added clarity and minimize ‘noise’ from potential outliers. The number of survey respondents for each province is shown and is acceptable.\nWith 1 as the highest income quintile and 5 as the lowest income quintile, it can been seen that population of Quang Ninh is dominated by a larger ‘middle income’ population. This is indicative of a healthy growing economy as compared to its neighbours.\n\n\n\n\n\n\n\n\n\nUsing the Violin Plot, the wealth distribution can be seen more clearly. Ha Giang and Yen Bai are very thin at the top, suggesting that very few of the population are in the highest income quintile and more of their population.\nIt can be seen that the median for Yen Bai is lower than 3, indicating that majority of its population are in the lower income quintiles."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#drivers-of-income-growth",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#drivers-of-income-growth",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Drivers of Income Growth",
+    "text": "Drivers of Income Growth\nThe key drivers of income growth which will be analyzed are Education, Training and Credit. Ridgeline Plot will be used for this.\n\n\n\n\n\n\n\n\n\nThe above shows the positive relationship between increasing the levels of formal education and raising income levels in general. However, there are some anomalies which could be due to resource constraints such as limited land or unexpected setbacks such as accidents which impact normal productivity levels.\n\n\n\n\n\n\n\n\n\nThe above shows that short term vocational training is effective in shifting individuals from the lowest income quintile to the next. indicating a positive relationship between vocational training and income levels.\nFor longer term vocational training, the income quintile shift is to the top quintile. However, this avenue may not be feasible for the populants as it requires significant diversion of resources such as time and money to reap potential benefits.\n\n\n\n\n\n\n\n\n\nThe above shows that access to credit does enable individuals to move to higher income quintiles although this is uniform across the population."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#is-technology-an-accelerator",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#is-technology-an-accelerator",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Is Technology an Accelerator?",
+    "text": "Is Technology an Accelerator?"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#readings-references",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#readings-references",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Readings & References",
+    "text": "Readings & References\n[1] Anh Ngoc Mai, Thao Huong Pham, Ha Thanh Hoang, Hoa Hoang Thi Nguyen (2021). Income of informal labourers in rural areas: A survey dataset of northern mountainous regions in Vietnam. Data in Brief, 38, 107292. https://doi.org/10.1016/j.dib.2021.107292\n[2] Anh Ngoc Mai (2021), “Dataset for paper”, Mendeley Data, V1. http://dx.doi.org/10.17632/s6p7dwj3j6.1\n[3] National Statistics Office (NSO) – Vietnam. www.nso.gov.vn\n[4] Dao Le Trang Anh, Nguyen Tuan Anh, Abbas Ali Chandio (2023). Climate change and its impacts on Vietnam agriculture: A macroeconomic perspective. Ecological Informatics, Volume 74,2023,101960, ISSN 1574-9541. https://doi.org/10.1016/j.ecoinf.2022.101960\n[5] Emily Gray, Darryl Jones (2022). Innovation, agricultural productivity and sustainability in Viet Nam (OECD Food, Agriculture and Fisheries Papers, No. 181). OECD Publishing. https://doi.org/10.1787/9cc1f47a-en\n[6] Tran Duc Vien,(2025, September 17).Vietnamese agriculture in the new era. Vietnam National University of Agriculture. https://eng.vnua.edu.vn/news-and-events/vietnamese-agriculture-in-the-new-era-57732\n[7] National Statistics Office of Vietnam. (2021, June). The trend of inequality in income distribution in Vietnam 2016-2020 period. https://www.nso.gov.vn/en/data-and-statistics/2021/06/the-trend-of-inequality-in-income-distribution-in-vietnam-2016-2020-period/"
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#sources-of-income",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#sources-of-income",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Sources of Income",
+    "text": "Sources of Income\n\n\n\n\n\n\n\n\n\nUsing the stacked bar chart, we can see the majority of income is derived from agricultural with the smallest source of income derived from services and industrial work across the regions.\nThis leaves the agricultural-based communities vulnerable to global warming phenomenons such as adverse weather conditions, labour force vulnerability such as urban migration as Vietnam moves from a developing to developed country and lack of pricing power in its agricultural exports."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#can-technology-be-an-accelerator",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#can-technology-be-an-accelerator",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Can Technology be an Accelerator?",
+    "text": "Can Technology be an Accelerator?\n\n\n\n\n\n\n\n\n\nUsing Box Plot, the impact of techlogy application on agricultural activity can be illustrated. There is an outlier within the ‘Adequate’ group, suggesting that it is possible for technology to exponentially increase income.\n\n\n\n\n\n\n\n\n\nUnexpectedly, the highest median income range is for respondents categorized with no technology application (‘None’). The interquartile range (IQR) is also higher than that of the ‘Low’ and ‘Adequate’ groups.\nAs survey questionnaires with null responses were also marked as ‘None’, this might include those with genuinely do not use any technology or are at the other end of the spectrum (i.e. highly automated) given that there were only two options (‘Low’ or ‘Adequate’) available in the questionnaire.\nLow technology application shows the lowest medium income and longest downward whisker compared to the other two categories. In contrast, adequate technology application has the longest upward whisker, indicating a higher potential income. As such, technology can be seen as an accelerator rather than a factor for income growth."
+  },
+  {
+    "objectID": "Take-home_Ex01/Take-home_Ex01.html#conclusion",
+    "href": "Take-home_Ex01/Take-home_Ex01.html#conclusion",
+    "title": "A Study of Rural Income using Visual Data Analytics",
+    "section": "Conclusion",
+    "text": "Conclusion\n• Geography naturally imposes ‘income ceilings’ as illustrated by the different fates of Bac Giang (near Hanoi) and Yen Bai (‘unfriendly’ mountainous terrain) even though both provinces are in North Vietnam.\n• There is a direct positive correlation between formal education and income as seen in the analysis on the returns of investment of formal education and vocational training, with long term vocational training seen to ‘propel’ income growth. However, the opportunity costs of engagement are high and thus acting as a deterrent. As such, focus on the promotion and delivery of short-term vocational training will bring about faster and more effective results for lower income segments of the population.\n• Technology application does not appear to be a key factor in income growth, instead acting as accelerator. More analysis is required to explore this paradox given that the use of technology is generally assumed to increase productive capacity and hence income. Suggested variables to be consider are accessibility, subsidies, training, costs, size of agricultural operations and feasibility of application.\n• Access to credit is clearly a factor of income growth across all provinces so policy implementations could focus on expanding the use of this fiscal tool to accelerate income growth.\n• Lastly, policymakers should also take heed of changes in the labour force in agricultural provinces to protect Vietnam’s self-sufficiency in agriculture.\n\n\n\n\n\n\n\n\n\nWith rapid industrialization and if the urban-rural income levels widen, urban migration pose an issue for the sustainability of the agricultural industry over time."
   }
 ]
