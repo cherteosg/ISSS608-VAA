@@ -99,7 +99,7 @@ survey_clean <- survey %>%
 ## Income Across the Provinces
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
 #| warning: false  
@@ -130,7 +130,7 @@ ggplot(income_summary, aes(x = reorder(Province, total_income), y = total_income
 ```
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
 #| warning: false  
@@ -163,10 +163,10 @@ On the other hand, Yen Bai is characterized by mountainous terrain covering more
 ## Income Disparity
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
-#| warning: false
+#| warning: false  
 survey_clean %>%
   filter(!is.na(Quintile)) %>%  
   ggplot(aes(x = Province, fill = factor(Quintile))) +
@@ -190,10 +190,10 @@ Next we look at the income disparity across and within the provinces using a sta
 With 1 as the highest income quintile and 5 as the lowest income quintile, it can been seen that population of Quang Ninh is dominated by a larger 'middle income' population. This is indicative of a healthy growing economy as compared to its neighbours.
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
-#| warning: false  
+#| warning: false    
 survey_clean %>%
   filter(!is.na(Quintile)) %>%
   ggplot(aes(x = reorder(Province, Quintile, FUN = median), y = Quintile, fill = Province)) +
@@ -220,10 +220,10 @@ It can be seen that the median for Yen Bai is lower than 3, indicating that majo
 The key drivers of income growth which will be analyzed are Education, Training and Credit. Ridgeline Plot will be used for this. 
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
-#| warning: false  
+#| warning: false   
 survey_clean %>%
   filter(!is.na(Education), !is.na(Quintile)) %>%
   mutate(Education = factor(Education, 
@@ -257,10 +257,10 @@ ggplot(aes(x = Quintile,
 The above shows the positive relationship between increasing the levels of formal education and raising income levels in general. However, there are some anomalies which could be due to resource constraints such as limited land or unexpected setbacks such as accidents which impact normal productivity levels.
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
-#| warning: false  
+#| warning: false   
 survey_clean %>%
   filter(Training %in% c("Short", "Long"), !is.na(Quintile)) %>%
 ggplot(aes(x = Quintile, y = Training, fill = Training)) +
@@ -291,10 +291,10 @@ The above shows that short term vocational training is effective in shifting ind
 For longer term vocational training, the income quintile shift is to the top quintile. However, this avenue may not be feasible for the populants as it requires significant diversion of resources such as time and money to reap potential benefits. 
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
-#| warning: false  
+#| warning: false   
 survey_clean %>%
   filter(!is.na(Credit), !is.na(Quintile)) %>%
   ggplot(aes(x = Quintile, y = Credit, fill = Credit)) +
@@ -325,10 +325,10 @@ The above shows that access to credit does enable individuals to move to higher 
 ## Sources of Income
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
-#| warning: false  
+#| warning: false   
 income_components <- survey_clean %>%
   select(Province, Agri, SvcInd, Others) %>%
   filter(!is.na(Agri) & !is.na(SvcInd) & !is.na(Others)) %>%
@@ -358,7 +358,7 @@ This leaves the agricultural-based communities vulnerable to global warming phen
 ## Can Technology be an Accelerator?
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
 #| warning: false  
@@ -400,10 +400,10 @@ survey_clean %>%
 Using Box Plot, the impact of techlogy application on agricultural activity can be illustrated. There is an outlier within the 'Adequate' group, suggesting that it is possible for technology to exponentially increase income. 
 
 ```{r}
-#| echo: false       
+#| echo: true       
 #| code-fold: true   
 #| message: false    
-#| warning: false  
+#| warning: false   
 #| fig-width: 9
 #| fig-height: 6
 survey_clean %>%
