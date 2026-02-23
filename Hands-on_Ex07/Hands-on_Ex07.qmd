@@ -68,7 +68,7 @@ attacks <- attacks %>%
 kable(head(attacks))
 ```
 
-# 1.  Plotting Calendar Heatmap
+# 1. Plotting Calendar Heatmap
 
 ## Building Calendar Heatmaps
 
@@ -146,7 +146,7 @@ ggplot(top4_attacks,
         legend.text = element_text(size = 6) )
 ```
 
-# 2.  Plotting Cycle Plot
+# 2. Plotting Cycle Plot
 
 ## Data Import
 
@@ -206,7 +206,7 @@ ggplot() +
   theme_tufte(base_family = "sans")
 ```
 
-# 3.  Plotting Slopegraph
+# 3. Plotting Slopegraph
 
 ## Data Import
 
