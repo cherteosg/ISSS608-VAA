@@ -16,25 +16,24 @@ pacman::p_load(sf, tmap, tidyverse)
 mpsz <- st_read(dsn = "data/geospatial", 
                 layer = "MP14_SUBZONE_WEB_PL")
 ```
+
 ### Examining mpsz content
 
 ```{r}
 mpsz
 ```
-## Importing Attribute into R 
+
+## Importing Attribute into R
 
 ```{r}
 popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
 ```
+
 ## Data Preparation
 
 Prepare a data table with year 2020 values. Variables to include: PA, SZ, YOUNG, ECONOMY ACTIVE, AGED, TOTAL, DEPENDENCY.
 
-YOUNG:  age group 0 to 4 until age group 20 to 24
-ECONOMICALLY ACTIVE: age group 25-29 until age group 60-64
-AGED: age group 65 and above
-TOTAL: all age groups, and
-DEPENDENCY: the ratio between YOUNG and AGED against ECONOMICALLY ACTIVE group
+YOUNG: age group 0 to 4 until age group 20 to 24 ECONOMICALLY ACTIVE: age group 25-29 until age group 60-64 AGED: age group 65 and above TOTAL: all age groups, and DEPENDENCY: the ratio between YOUNG and AGED against ECONOMICALLY ACTIVE group
 
 ### Data Wrangling
 
@@ -86,12 +85,12 @@ write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
 
 Two approaches can be used to prepare thematic map using tmap.
 
-A) Plotting a thematic map quickly by using qtm().
-B) Plotting highly customisable thematic map by using tmap elements.
+A)  Plotting a thematic map quickly by using qtm().
+B)  Plotting highly customisable thematic map by using tmap elements.
 
 ### Plot a choropleth map using qtm()
 
-Static Map 
+Static Map
 
 ```{r}
 tmap_mode("plot")
@@ -99,13 +98,14 @@ qtm(mpsz_pop2020,
     fill = "DEPENDENCY")
 ```
 
-Interactive Map 
+Interactive Map
 
 ```{r}
 tmap_mode("view")
 qtm(mpsz_pop2020, 
     fill = "DEPENDENCY")
 ```
+
 ### Plot a choropleth map using tmap elements
 
 ```{r}
@@ -142,13 +142,11 @@ tm_shape(mpsz_pop2020)+
   tm_polygons("DEPENDENCY")
 ```
 
-Note: 
+Note:
 
-The default interval binning used to draw the choropleth map is called “pretty”. 
-The default colour scheme used is YlOrRd of ColorBrewer.
-Missing values will be shaded in grey by default.
+The default interval binning used to draw the choropleth map is called “pretty”. The default colour scheme used is YlOrRd of ColorBrewer. Missing values will be shaded in grey by default.
 
-### Drawing a choropleth map using tm_fill() and *tm_border()**
+### Drawing a choropleth map using tm_fill() and \*tm_border()\*\*
 
 #### Using tm_full() only
 
@@ -172,9 +170,9 @@ The alpha argument is used to define transparency number between 0 (totally tran
 
 There are three other arguments for tm_borders():
 
-1) col = border colour,
-2) lwd = border line width. The default is 1, and
-3) lty = border line type. The default is “solid”.
+1)  col = border colour,
+2)  lwd = border line width. The default is 1, and
+3)  lty = border line type. The default is “solid”.
 
 ## Data Classification Methods of tmap
 
@@ -186,7 +184,7 @@ To define a data classification method, the style argument of tm_fill() or tm_po
 
 ### Plot choropleth maps with built-in classification methods
 
-A) Quantile data classification using 5 classes
+A)  Quantile data classification using 5 classes
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -197,7 +195,7 @@ tm_shape(mpsz_pop2020)+
   tm_borders(fill_alpha = 0.5)
 ```
 
-B) Using equal data classification method
+B)  Using equal data classification method
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -208,7 +206,7 @@ tm_shape(mpsz_pop2020)+
   tm_borders(fill_alpha = 0.5)
 ```
 
-C) Quantile data classification using 2 classes
+C)  Quantile data classification using 2 classes
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -219,7 +217,7 @@ tm_shape(mpsz_pop2020)+
   tm_borders(fill_alpha = 0.5)
 ```
 
-D) Quantile data classification using 10 classes
+D)  Quantile data classification using 10 classes
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -230,7 +228,7 @@ tm_shape(mpsz_pop2020)+
   tm_borders(fill_alpha = 0.5)
 ```
 
-E) Quantile data classification using 20 classes
+E)  Quantile data classification using 20 classes
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -243,8 +241,7 @@ tm_shape(mpsz_pop2020)+
 
 ### Plot choropleth map with custom breaks
 
-The breakpoints can be set explicitly by means of the breaks argument to the tm_fill(). 
-In tmap(), the breaks include a minimum and maximum so to end up with n categories, n+1 elements must be specified in the breaks option (values must be in increasing order).
+The breakpoints can be set explicitly by means of the breaks argument to the tm_fill(). In tmap(), the breaks include a minimum and maximum so to end up with n categories, n+1 elements must be specified in the breaks option (values must be in increasing order).
 
 #### Descriptive statistics on selected variable
 
@@ -253,7 +250,8 @@ This is useful prior to settingthe break points
 ```{r}
 summary(mpsz_pop2020$DEPENDENCY)
 ```
-Based on the above, set the break point at 0.60, 0.70, 0.80, and 0.90 with a minimum and maximum of 0 and 100 respectively. 
+
+Based on the above, set the break point at 0.60, 0.70, 0.80, and 0.90 with a minimum and maximum of 0 and 100 respectively.
 
 Our breaks vector is thus c(0, 0.60, 0.70, 0.80, 0.90, 1.00)
 
@@ -292,7 +290,7 @@ tm_shape(mpsz_pop2020)+
 
 ## Map Layouts
 
-Combines all map elements into a cohesive map. 
+Combines all map elements into a cohesive map.
 
 ### Map Legend
 
@@ -310,7 +308,6 @@ tm_shape(mpsz_pop2020)+
   tm_borders(fill_alpha = 0.5) +
   tm_title("Distribution of Dependency Ratio by planning subzone \n(Jenks classification)")
 ```
-
 
 ### Map style
 
@@ -352,7 +349,7 @@ tm_shape(mpsz_pop2020)+
              position = c("left", "bottom"))
 ```
 
-To reset the default style, use the below: 
+To reset the default style, use the below:
 
 ```{r}
 tmap_style("watercolor")
@@ -432,6 +429,7 @@ agedmap <- tm_shape(mpsz_pop2020)+
 
 tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
 ```
+
 ## Map Spatial Object Meeting a Selection Criterion
 
 ```{r}
@@ -460,9 +458,9 @@ tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N == "CENTRAL REGION", ]) +
 
 # Visualising Geospatial Point Data
 
-Proportional symbol maps (also known as graduate symbol maps) are a class of maps that use the visual variable of size to represent differences in the magnitude of a discrete, abruptly changing phenomenon, e.g. counts of people. 
+Proportional symbol maps (also known as graduate symbol maps) are a class of maps that use the visual variable of size to represent differences in the magnitude of a discrete, abruptly changing phenomenon, e.g. counts of people.
 
-Like choropleth maps, you can create classed or unclassed versions of these maps. The classed ones are known as range-graded or graduated symbols, and the unclassed are called proportional symbols, where the area of the symbols are proportional to the values of the attribute being mapped. 
+Like choropleth maps, you can create classed or unclassed versions of these maps. The classed ones are known as range-graded or graduated symbols, and the unclassed are called proportional symbols, where the area of the symbols are proportional to the values of the attribute being mapped.
 
 ## Create a proportional symbol map using tmap()
 
@@ -479,6 +477,7 @@ pacman::p_load(sf, tmap, tidyverse)
 ```{r}
 sgpools <- read_csv("data/aspatial/SGPools_svy21.csv")
 ```
+
 To check if data file has been imported correctly:
 
 ```{r}
@@ -493,10 +492,7 @@ sgpools_sf <- st_as_sf(sgpools,
                        crs= 3414)
 ```
 
-Notes:
-1) Provide the column name of the x-coordinates first then followed by the column name of the y-coordinates.
-2) The crs argument requires provision of the coordinates system in epsg format. EPSG: 3414 is Singapore SVY21 Projected Coordinate System. Other countries’ epsg codes can be found on epsg.io.
-3) A new column called geometry has been added into the data frame.
+Notes: 1) Provide the column name of the x-coordinates first then followed by the column name of the y-coordinates. 2) The crs argument requires provision of the coordinates system in epsg format. EPSG: 3414 is Singapore SVY21 Projected Coordinate System. Other countries’ epsg codes can be found on epsg.io. 3) A new column called geometry has been added into the data frame.
 
 To display the newly created sgpools_sf:
 
@@ -560,4 +556,3 @@ tm_shape(sgpools_sf) +
 ```{r}
 tmap_mode("plot")
 ```
-
