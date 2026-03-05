@@ -1,0 +1,559 @@
+---
+title: "Hands-on_Ex08"
+---
+
+# Choropleth Mapping with R
+
+## Installing and loading packages
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+## Importing Data
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", 
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+### Examining mpsz content
+
+```{r}
+mpsz
+```
+
+## Importing Attribute into R
+
+```{r}
+popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
+```
+
+## Data Preparation
+
+Prepare a data table with year 2020 values. Variables to include: PA, SZ, YOUNG, ECONOMY ACTIVE, AGED, TOTAL, DEPENDENCY.
+
+YOUNG: age group 0 to 4 until age group 20 to 24 ECONOMICALLY ACTIVE: age group 25-29 until age group 60-64 AGED: age group 65 and above TOTAL: all age groups, and DEPENDENCY: the ratio between YOUNG and AGED against ECONOMICALLY ACTIVE group
+
+### Data Wrangling
+
+```{r}
+popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup() %>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12])) %>%
+mutate(`ECONOMICALLY ACTIVE` = rowSums(.[7:11])+
+rowSums(.[13:15]))%>%
+mutate(`AGED`=rowSums(.[16:21])) %>%
+mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+/`ECONOMICALLY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+       `ECONOMICALLY ACTIVE`, `AGED`, 
+       `TOTAL`, `DEPENDENCY`)
+```
+
+### Joining the attribute data and geospatial data
+
+This step is required to convert the values in PA and SZ fields to upper case (from upper and lower case).
+
+```{r}
+popdata2020 <- popdata2020 %>%
+  mutate(across(c(PA, SZ), toupper)) %>%
+  filter(`ECONOMICALLY ACTIVE` > 0)
+```
+
+This is used to join the geographical data and attribute table using planning subzone name e.g. SUBZONE_N and SZ as the common identifier.
+
+```{r}
+mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                          by = c("SUBZONE_N" = "SZ"))
+```
+
+Left_join() of dplyr package is used with mpsz simple feature data frame as the left data table is to ensure that the output will be a simple features data frame.
+
+```{r}
+write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
+```
+
+## Choropleth Mapping Geospatial Data Using tmap
+
+Two approaches can be used to prepare thematic map using tmap.
+
+A)  Plotting a thematic map quickly by using qtm().
+B)  Plotting highly customisable thematic map by using tmap elements.
+
+### Plot a choropleth map using qtm()
+
+Static Map
+
+```{r}
+tmap_mode("plot")
+qtm(mpsz_pop2020, 
+    fill = "DEPENDENCY")
+```
+
+Interactive Map
+
+```{r}
+tmap_mode("view")
+qtm(mpsz_pop2020, 
+    fill = "DEPENDENCY")
+```
+
+### Plot a choropleth map using tmap elements
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons(fill = "DEPENDENCY", 
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 5,
+                values = "brewer.blues"),
+              fill.legend = tm_legend(
+                title = "Dependency ratio")) +
+  tm_title("Distribution of Dependency Ratio by planning subzone") +
+  tm_layout(frame = TRUE) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+#### Drawing a base map
+
+In the code chunk below, tm_shape() is used to define the input data (i.e mpsz_pop2020) and tm_polygons() is used to draw the planning subzone polygons
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons()
+```
+
+### Drawing a choropleth map using tm_polygons()
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY")
+```
+
+Note:
+
+The default interval binning used to draw the choropleth map is called “pretty”. The default colour scheme used is YlOrRd of ColorBrewer. Missing values will be shaded in grey by default.
+
+### Drawing a choropleth map using tm_fill() and \*tm_border()\*\*
+
+#### Using tm_full() only
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY")
+```
+
+#### Add tm_borders()
+
+This will show the boundaries of the planning subzones.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons(fill = "DEPENDENCY") +
+  tm_borders(lwd = 0.01,  
+             fill_alpha = 0.1)
+```
+
+The alpha argument is used to define transparency number between 0 (totally transparent) and 1 (not transparent). By default, the alpha value of the col is used (normally 1).
+
+There are three other arguments for tm_borders():
+
+1)  col = border colour,
+2)  lwd = border line width. The default is 1, and
+3)  lty = border line type. The default is “solid”.
+
+## Data Classification Methods of tmap
+
+Most choropleth maps employ some methods of data classification. The purpose of data classification is to take a large number of observations and group them into data ranges or classes.
+
+tmap provides a total ten data classification methods: fixed, sd, equal, pretty (default), quantile, kmeans, hclust, bclust, fisher, and jenks.
+
+To define a data classification method, the style argument of tm_fill() or tm_polygons() will be used.
+
+### Plot choropleth maps with built-in classification methods
+
+A)  Quantile data classification using 5 classes
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "jenks",
+        n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+B)  Using equal data classification method
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "equal",
+        n = 5)) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+C)  Quantile data classification using 2 classes
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "jenks",
+        n = 2)) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+D)  Quantile data classification using 10 classes
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "jenks",
+        n = 10)) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+E)  Quantile data classification using 20 classes
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "jenks",
+        n = 20)) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+### Plot choropleth map with custom breaks
+
+The breakpoints can be set explicitly by means of the breaks argument to the tm_fill(). In tmap(), the breaks include a minimum and maximum so to end up with n categories, n+1 elements must be specified in the breaks option (values must be in increasing order).
+
+#### Descriptive statistics on selected variable
+
+This is useful prior to settingthe break points
+
+```{r}
+summary(mpsz_pop2020$DEPENDENCY)
+```
+
+Based on the above, set the break point at 0.60, 0.70, 0.80, and 0.90 with a minimum and maximum of 0 and 100 respectively.
+
+Our breaks vector is thus c(0, 0.60, 0.70, 0.80, 0.90, 1.00)
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+          breaks = c(0, 0.60, 0.70, 0.80, 0.90, 1.00)) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+## Colour Schemes
+
+### Using ColourBrewer palette
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "quantile",
+        n = 5,
+        values = "brewer.greens")) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+To reverse the colour shading, add a “-” prefix.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "quantile",
+        n = 5,
+        values = "-brewer.greens")) +
+  tm_borders(fill_alpha = 0.5)
+```
+
+## Map Layouts
+
+Combines all map elements into a cohesive map.
+
+### Map Legend
+
+To change the placement, format and appearance of the legend:
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY",
+      fill.scale = tm_scale_intervals(
+        style = "jenks",
+        n = 5,
+        values = "brewer.greens"),
+      fill.legend = tm_legend(
+        title = "Dependency ratio")) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title("Distribution of Dependency Ratio by planning subzone \n(Jenks classification)")
+```
+
+### Map style
+
+Classic style:
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons(
+    fill = "DEPENDENCY",
+    fill.scale = tm_scale_intervals(
+      style = "quantile",
+      values = "brewer.greens"
+    ),
+    col = "black",
+    fill_alpha = 0.5
+  ) +
+  tm_layout(style = "classic")
+```
+
+### Cartographic Furniture
+
+Add other map furniture such as compass, scale bar and grid lines:
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons(fill = "DEPENDENCY", 
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 5,
+                values = "brewer.blues"),
+              fill.legend = tm_legend(
+                title = "Dependency ratio")) +
+  tm_title("Distribution of Dependency Ratio by planning subzone") +
+  tm_layout(frame = TRUE) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+To reset the default style, use the below:
+
+```{r}
+tmap_style("watercolor")
+```
+
+## Drawing Small Multiple Choropleth Maps (a.k.a facet maps)
+
+Small multiple maps can be plotted in three ways.
+
+### Assign Multiple Values to at least one of the Aesthetic arguments
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons(
+    fill = c("YOUNG", "AGED"),
+    fill.scale = tm_scale_intervals(
+      style = "equal",
+      values = "brewer.blues"
+    ),
+    col_alpha = 0.5
+  ) +
+  tm_layout(
+    legend.position = c("right", "bottom")
+  ) +
+  tmap_style("white")
+```
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons(
+    fill = c("DEPENDENCY", "AGED"),
+    fill.scale = list(
+      tm_scale_intervals(style = "equal", values = "brewer.blues"),
+      tm_scale_intervals(style = "quantile", values = "brewer.greens")
+    )
+  ) +
+  tm_layout(
+    legend.position = c("right", "bottom")
+  )
+```
+
+### Define a Group-by Variable in tm_facets()
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons(
+    fill = "DEPENDENCY",
+    fill.scale = tm_scale_intervals(
+      style = "quantile",
+      values = "brewer.blues"
+    ),
+    col = "black",
+    fill_alpha = 0.5
+  ) +
+  tm_facets(
+    by = "REGION_N",
+    free.coords = TRUE
+  ) +
+  tm_layout(
+    legend.show = FALSE,
+    title.position = c("center", "center"),
+    title.size = 20)
+```
+
+### Create Multiple Stand-alone Maps with tmap_arrange()
+
+```{r}
+youngmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("YOUNG", 
+              style = "quantile", 
+              palette = "Blues")
+
+agedmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("AGED", 
+              style = "quantile", 
+              palette = "Blues")
+
+tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+```
+
+## Map Spatial Object Meeting a Selection Criterion
+
+```{r}
+tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N == "CENTRAL REGION", ]) +
+  tm_polygons(
+    fill = "DEPENDENCY",
+    fill.scale = tm_scale_intervals(
+      style = "quantile",
+      values = "brewer.blues"
+    ),
+    fill.legend = tm_legend(
+      hist = TRUE,
+      orientation = "portrait",
+      hist.height = 0.1
+    ),
+    col_alpha = 0.5
+  ) +
+  tm_layout(
+    legend.outside = TRUE,
+    legend.position = c("right", "bottom"),
+    legend.height = 0.45,
+    legend.width = 5.0,
+    frame = FALSE
+  )
+```
+
+# Visualising Geospatial Point Data
+
+Proportional symbol maps (also known as graduate symbol maps) are a class of maps that use the visual variable of size to represent differences in the magnitude of a discrete, abruptly changing phenomenon, e.g. counts of people.
+
+Like choropleth maps, you can create classed or unclassed versions of these maps. The classed ones are known as range-graded or graduated symbols, and the unclassed are called proportional symbols, where the area of the symbols are proportional to the values of the attribute being mapped.
+
+## Create a proportional symbol map using tmap()
+
+Install and loading package
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+## Geospatial Data Wrangling
+
+### Data Import and Prepartion
+
+```{r}
+sgpools <- read_csv("data/aspatial/SGPools_svy21.csv")
+```
+
+To check if data file has been imported correctly:
+
+```{r}
+list(sgpools) 
+```
+
+## Create sf data frame from an aspatial data frame
+
+```{r}
+sgpools_sf <- st_as_sf(sgpools, 
+                       coords = c("XCOORD", "YCOORD"),
+                       crs= 3414)
+```
+
+Notes: 1) Provide the column name of the x-coordinates first then followed by the column name of the y-coordinates. 2) The crs argument requires provision of the coordinates system in epsg format. EPSG: 3414 is Singapore SVY21 Projected Coordinate System. Other countries’ epsg codes can be found on epsg.io. 3) A new column called geometry has been added into the data frame.
+
+To display the newly created sgpools_sf:
+
+```{r}
+list(sgpools_sf)
+```
+
+## Drawing Proportional Symbol Map
+
+To turn on interactive mode of tmap:
+
+```{r}
+tmap_mode("view")
+```
+
+### Create an Interactive Point Symbol map
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "red",
+           size = 1,
+           col = "black",
+           lwd = 1)
+```
+
+### Draw a Proportional Symbol map
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "red",
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1)
+```
+
+### Change Visual Attribute - Color
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "OUTLET TYPE", 
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1)
+```
+
+### Working with Faceted Plots
+
+```{r}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "OUTLET TYPE", 
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1) + 
+  tm_facets(by= "OUTLET TYPE",
+            nrow = 1,
+            sync = TRUE)
+```
+
+### Switch Viewer back to Plot mode
+
+```{r}
+tmap_mode("plot")
+```
+
