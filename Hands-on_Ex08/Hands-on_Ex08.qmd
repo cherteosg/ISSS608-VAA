@@ -561,5 +561,3 @@ tm_shape(sgpools_sf) +
 tmap_mode("plot")
 ```
 
-
-
