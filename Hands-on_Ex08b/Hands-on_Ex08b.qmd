@@ -2,7 +2,7 @@
 title: "Hands-on_Ex08b"
 ---
 
-# Analytical Mapping using R
+# Analytical Mapping using R Methods
 
 ## Installing and Loading Packages
 
