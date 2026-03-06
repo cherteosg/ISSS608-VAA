@@ -1,284 +1,104 @@
 ---
-title: "Hands-on_Ex08a"
+title: "Hands-on_Ex08"
 ---
 
-# Analytical Mapping using R
+# Visualising Geospatial Point Data
 
-## Installing and Loading Packages
+Proportional symbol maps (also known as graduate symbol maps) are a class of maps that use the visual variable of size to represent differences in the magnitude of a discrete, abruptly changing phenomenon, e.g. counts of people.
 
-```{r}
-pacman::p_load(tmap, tidyverse, sf)
-```
+Like choropleth maps, you can create classed or unclassed versions of these maps. The classed ones are known as range-graded or graduated symbols, and the unclassed are called proportional symbols, where the area of the symbols are proportional to the values of the attribute being mapped.
 
-## Importing data
+## Create a proportional symbol map using tmap()
 
-```{r}
-NGA_wp <- read_rds("data/rds/NGA_wp.rds")
-```
-
-## Basic Choropleth Mapping
-
-### Visualising Distribution of Non-functional Water Point
-
-Plot a choropleth map showing the distribution of non-function water point by LGA.
+Install and loading package
 
 ```{r}
-p1 <- tm_shape(NGA_wp) +
-  tm_polygons(fill = "wp_functional",
-             fill.scale = tm_scale_intervals(
-               style = "equal",
-               n = 10,
-               values = "brewer.blues"),
-             fill.legend = tm_legend(
-               position = c("right", "bottom"))) +
-  tm_borders(lwd = 0.1,
-             fill_alpha = 1) +
-  tm_title("Distribution of functional water point by LGAs")
+pacman::p_load(sf, tmap, tidyverse)
 ```
+
+## Geospatial Data Wrangling
+
+### Data Import and Prepartion
 
 ```{r}
-p2 <- tm_shape(NGA_wp) + 
-  tm_polygons(fill = "total_wp", 
-              fill.scale = tm_scale_intervals(
-                style = "equal",
-                n = 10,
-                values = "brewer.blues"),
-              fill.legend = tm_legend(
-                position = c("right", "bottom"))) +
-  tm_borders(lwd = 0.1, 
-             fill_alpha = 1) + 
-  tm_title("Distribution of total  water point by LGAs")
+sgpools <- read_csv("data/aspatial/SGPools_svy21.csv")
 ```
+
+To check if data file has been imported correctly:
 
 ```{r}
-tmap_arrange(p2, p1, nrow = 1)
+list(sgpools) 
 ```
 
-## Choropleth Map for Rates
-
-### Deriving Proportion of Functional Water Points and Non-Functional Water Points
-
-Mutate() from dplyr package is used to derive two fields, namely pct_functional and pct_nonfunctional.
+## Create sf data frame from an aspatial data frame
 
 ```{r}
-NGA_wp <- NGA_wp %>%
-  mutate(pct_functional = wp_functional/total_wp) %>%
-  mutate(pct_nonfunctional = wp_nonfunctional/total_wp)
+sgpools_sf <- st_as_sf(sgpools, 
+                       coords = c("XCOORD", "YCOORD"),
+                       crs= 3414)
 ```
 
-### Plotting Map of Rate
+Notes: 1) Provide the column name of the x-coordinates first then followed by the column name of the y-coordinates. 2) The crs argument requires provision of the coordinates system in epsg format. EPSG: 3414 is Singapore SVY21 Projected Coordinate System. Other countries’ epsg codes can be found on epsg.io. 3) A new column called geometry has been added into the data frame.
+
+To display the newly created sgpools_sf:
 
 ```{r}
-tm_shape(NGA_wp) +
-  tm_polygons("pct_functional",
-              fill.scale = tm_scale_intervals(
-                style = "equal",
-                n = 10,
-                values = "brewer.blues"),
-              fill.legend = tm_legend(
-                position = c("right", "bottom"))) + 
-  tm_borders(lwd = 0.1,
-             fill_alpha = 1) +
-  tm_title("Rate map of functional water point by LGAs")
+list(sgpools_sf)
 ```
 
-## Extreme Value Maps
+## Drawing Proportional Symbol Map
 
-Extreme value maps are variations of common choropleth maps where the classification is designed to highlight extreme values at the lower and upper end of the scale, with the goal of identifying outliers.
-
-These maps were developed in the spirit of spatializing EDA, i.e., adding spatial features to commonly used approaches in non-spatial EDA (Anselin 1994).
-
-### Percentile Map
-
-The percentile map is a special type of quantile map with six specific categories: 0-1%,1-10%, 10-50%,50-90%,90-99%, and 99-100%. The corresponding breakpoints can be derived by means of the base R quantile command, passing an explicit vector of cumulative probabilities as c(0,.01,.1,.5,.9,.99,1). Note that the begin and endpoint need to be included.
-
-#### Data Preparation
-
-1)  Exclude records with NA by using the code chunk below.
+To turn on interactive mode of tmap:
 
 ```{r}
-NGA_wp <- NGA_wp %>%
-  drop_na()
+tmap_mode("view")
 ```
 
-2)  Creating customised classification and extracting values
+### Create an Interactive Point Symbol map
 
 ```{r}
-percent <- c(0,.01,.1,.5,.9,.99,1)
-var <- NGA_wp["pct_functional"] %>%
-  st_set_geometry(NULL)
-quantile(var[,1], percent)
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "red",
+           size = 1,
+           col = "black",
+           lwd = 1)
 ```
 
-Note: Many base R functions cannot deal with the geometry so st_set_geometry(NULL) is used to drop geometry field.
-
-## Writing Functions
-
-Advantages: 1) Can give a function an evocative name that makes code easier to understand. 2) As requirements change, only need to update code in one place. 3) Eliminate the chance of making incidental mistakes during copy and paste (i.e. updating a variable name in one place, but not in another).
-
-### Create the get.var function
-
-Write an R function as shown below to extract a variable (i.e. wp_nonfunctional) as a vector out of an sf data.frame.
-
--   arguments: vname: variable name (as character, in quotes) df: name of sf data frame
-
--   returns: v: vector with values (without a column name)
+### Draw a Proportional Symbol map
 
 ```{r}
-get.var <- function(vname,df) {
-  v <- df[vname] %>% 
-    st_set_geometry(NULL)
-  v <- unname(v[,1])
-  return(v)
-}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "red",
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1)
 ```
 
-### A Percentile Mapping Function
-
-Write a percentile mapping function:
+### Change Visual Attribute - Color
 
 ```{r}
-percentmap <- function(vnam, df, legtitle = NA, mtitle = "Percentile Map") {
-
-  percent <- c(0, .01, .1, .5, .9, .99, 1)
-  var <- df[[vnam]]
-  bperc <- quantile(var, percent, na.rm = TRUE)
-
-  tm_shape(df) +
-    tm_polygons(
-      fill = vnam,
-      fill.scale = tm_scale_intervals(
-        breaks = bperc,
-        values = "brewer.blues",
-        labels = c("< 1%", "1% - 10%", "10% - 50%", "50% - 90%", "90% - 99%", "> 99%")
-      ),
-      fill.legend = tm_legend(title = legtitle),
-      col = "black"
-    ) +
-    tm_title(mtitle) +
-    tm_layout(title.position = c("right","bottom"))
-}
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "OUTLET TYPE", 
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1)
 ```
 
-### Test the Percentile Mapping Function
+### Working with Faceted Plots
 
 ```{r}
-percentmap("total_wp", NGA_wp)
+tm_shape(sgpools_sf) + 
+  tm_bubbles(fill = "OUTLET TYPE", 
+             size = "Gp1Gp2 Winnings",
+             col = "black",
+             lwd = 1) + 
+  tm_facets(by= "OUTLET TYPE",
+            nrow = 1,
+            sync = TRUE)
 ```
 
-## Box map
-
-A box map is an augmented quartile map, with an additional lower and upper category. When there are lower outliers, then the starting point for the breaks is the minimum value, and the second break is the lower fence.
-
-When there are no lower outliers, then the starting point for the breaks will be the lower fence, and the second break is the minimum value (there will be no observations that fall in the interval between the lower fence and the minimum value).
-
-```{r}
-ggplot(data = NGA_wp,
-       aes(x = "",
-           y = wp_nonfunctional)) +
-  geom_boxplot()
-```
-
-The break points for the box map vary depending on whether lower or upper outliers are present.
-
-## Create the Boxbreaks function
-
-The code chunk below is an R function that creating break points for a box map.
-
--   arguments: v: vector with observations mult: multiplier for IQR (default 1.5)
-
--   returns: bb: vector with 7 break points compute quartile and fences
-
-```{r}
-boxbreaks <- function(v,mult=1.5) {
-  qv <- unname(quantile(v))
-  iqr <- qv[4] - qv[2]
-  upfence <- qv[4] + mult * iqr
-  lofence <- qv[2] - mult * iqr
-  # initialize break points vector
-  bb <- vector(mode="numeric",length=7)
-  # logic for lower and upper fences
-  if (lofence < qv[1]) {  # no lower outliers
-    bb[1] <- lofence
-    bb[2] <- floor(qv[1])
-  } else {
-    bb[2] <- lofence
-    bb[1] <- qv[1]
-  }
-  if (upfence > qv[5]) { # no upper outliers
-    bb[7] <- upfence
-    bb[6] <- ceiling(qv[5])
-  } else {
-    bb[6] <- upfence
-    bb[7] <- qv[5]
-  }
-  bb[3:5] <- qv[2:4]
-  return(bb)
-}
-```
-
-### Create the get.var function
-
--   arguments: vname: variable name (as character, in quotes) df: name of sf data frame
-
--   returns: v: vector with values (without a column name)
-
-```{r}
-get.var <- function(vname,df) {
-  v <- df[vname] %>% st_set_geometry(NULL)
-  v <- unname(v[,1])
-  return(v)
-}
-```
-
-#### Test the newly created function
-
-```{r}
-var <- get.var("wp_nonfunctional", NGA_wp) 
-boxbreaks(var)
-```
-
-## Boxmap Function
-
-To create a box map:
-
--   arguments: vnam: variable name (as character, in quotes) df: simple features polygon layer legtitle: legend title mtitle: map title mult: multiplier for IQR -
-
--   returns: a tmap-element (plots a map)
-
-```{r}
-boxmap <- function(vnam, df,
-                   legtitle = NA,
-                   mtitle = "Box Map",
-                   mult = 1.5){
-
-  var <- df[[vnam]]
-  bb <- boxbreaks(var, mult = mult)
-
-  tm_shape(df) +
-    tm_fill(
-      col = vnam,
-      title = legtitle,
-      breaks = bb,
-      palette = "Blues",
-      labels = c(
-        "Lower outlier",
-        "< 25%",
-        "25% - 50%",
-        "50% - 75%",
-        "> 75%",
-        "Upper outlier"
-      )
-    ) +
-    tm_borders() +
-    tm_layout(
-      main.title = mtitle,
-      title.position = c("left", "top")
-    )
-}
-```
+### Switch Viewer back to Plot mode
 
 ```{r}
 tmap_mode("plot")
-boxmap("wp_nonfunctional", NGA_wp)
 ```
