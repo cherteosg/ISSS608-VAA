@@ -1,10 +1,8 @@
 ---
-title: "Hands-on_Ex08"
+title: "Hands-on_Ex08 Continued"
 ---
 
 # Data Classification Methods of tmap
-
-Most choropleth maps employ some methods of data classification. The purpose of data classification is to take a large number of observations and group them into data ranges or classes.
 
 tmap provides a total ten data classification methods: fixed, sd, equal, pretty (default), quantile, kmeans, hclust, bclust, fisher, and jenks.
 
