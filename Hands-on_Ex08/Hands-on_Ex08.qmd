@@ -85,9 +85,6 @@ write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
 
 Two approaches can be used to prepare thematic map using tmap.
 
-A)  Plotting a thematic map quickly by using qtm().
-B)  Plotting highly customisable thematic map by using tmap elements.
-
 ### Plot a choropleth map using qtm()
 
 Static Map
