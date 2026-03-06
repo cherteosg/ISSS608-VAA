@@ -1,5 +1,5 @@
 ---
-title: "Hands-on_Ex08"
+title: "Hands-on_Ex08a"
 ---
 
 # Visualising Geospatial Point Data
