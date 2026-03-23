@@ -8,7 +8,7 @@ title: "Hands-on_Ex10"
 
 ```{r}
 pacman::p_load(lubridate, ggthemes, reactable,
-reactablefmtr, gt, gtExtras, tidyverse)
+reactablefmtr, gt, gtExtras, tidyverse, dplyr)
 ```
 
 ## Import Data Set
@@ -247,30 +247,35 @@ sales_data %>%
 
 ## Interactive Information Dashboard Design - reactable and reactablefmtr methods
 
+### Install & Load Package
+
+```{r}
+remotes::install_github("timelyportfolio/dataui")
+```
+
+```{r}
+library(dataui)
+```
+
 ### Plot Interactive Sparklines
 
 Prepare the list field.
 
 ```{r}
-library(reactable)
-library(reactablefmtr)
-```
-
-```{r}
-report_spark <- report %>%
+report <- report %>%
   group_by(Product) %>%
-  summarize(`Monthly Sales` = list(Sales), .groups = "drop")
+  summarize(`Monthly Sales` = list(Sales))
 ```
 
 Plot the sparklines.
 
-```{r}
+```{r warning = FALSE}
 reactable(
-  data = report_spark,
+  report,
   columns = list(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
-      cell = function(value) react_sparkline(value)
+      cell = react_sparkline(report)
     )
   )
 )
@@ -280,14 +285,14 @@ reactable(
 
 Default is 10.
 
-```{r}
+```{r warning = FALSE}
 reactable(
-  data = report_spark,
+  report,
   defaultPageSize = 13,
   columns = list(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
-      cell = function(value) react_sparkline(value)
+      cell = react_sparkline(report)
     )
   )
 )
@@ -295,15 +300,15 @@ reactable(
 
 ### Add Points & Labels
 
-```{r}
+```{r warning = FALSE}
 reactable(
-  data = report_spark,
+  report,
   defaultPageSize = 13,
   columns = list(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
-      cell = function(value) react_sparkline(
-        value,
+      cell = react_sparkline(
+        report,
         highlight_points = highlight_points(
           min = "red", max = "blue"),
         labels = c("first", "last")
@@ -315,15 +320,15 @@ reactable(
 
 ### Add Reference Line
 
-```{r}
+```{r warning = FALSE}
 reactable(
-  data = report_spark, 
+  report,
   defaultPageSize = 13,
   columns = list(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
-      cell = function(value) react_sparkline(
-        value,
+      cell = react_sparkline(
+        report,
         highlight_points = highlight_points(
           min = "red", max = "blue"),
         statline = "mean"
@@ -335,15 +340,15 @@ reactable(
 
 ### Add Bandline
 
-```{r}
+```{r warning = FALSE}
 reactable(
-  data = report_spark, 
+  report,
   defaultPageSize = 13,
   columns = list(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
-      cell = function(value) react_sparkline(
-        value,
+      cell = react_sparkline(
+        report,
         highlight_points = highlight_points(
           min = "red", max = "blue"),
         line_width = 1,
@@ -357,15 +362,15 @@ reactable(
 
 ### Change from Sparkline to Sparkbar
 
-```{r}
+```{r warning = FALSE}
 reactable(
-  data = report_spark, 
+  report,
   defaultPageSize = 13,
   columns = list(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
-      cell = function(value) react_sparkbar(
-        value,
+      cell = react_sparkbar(
+        report,
         highlight_bars = highlight_bars(
           min = "red", max = "blue"),
         bandline = "innerquartiles",
