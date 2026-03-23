@@ -272,21 +272,14 @@ reactable(
     `Monthly Sales` = colDef(
       cell = function(value) react_sparkline(value)
     )
-  ),
-  style = list()
+  )
 )
 ```
 
-### Change the PageSize
+### Change the Page Size
 
 Default is 10.
 
-```{}
-report_spark <- report %>%
-  group_by(Product) %>%
-  summarize(`Monthly Sales` = list(Sales), .groups = "drop")
-```
-  
 ```{r}
 reactable(
   data = report_spark,
@@ -296,18 +289,11 @@ reactable(
     `Monthly Sales` = colDef(
       cell = function(value) react_sparkline(value)
     )
-  ),
-  style = list()
+  )
 )
 ```
 
 ### Add Points & Labels
-
-```{r}
-report_spark <- report %>%
-  group_by(Product) %>%
-  summarize(`Monthly Sales` = list(Sales), .groups = "drop")
-```
 
 ```{r}
 reactable(
@@ -329,14 +315,6 @@ reactable(
 
 ### Add Reference Line
 
-
-```{r}
-report_spark <- report %>%
-  group_by(Product) %>%
-  summarize(`Monthly Sales` = list(Sales), .groups = "drop")
-```
-
-
 ```{r}
 reactable(
   data = report_spark, 
@@ -345,7 +323,7 @@ reactable(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
       cell = function(value) react_sparkline(
-        report,
+        value,
         highlight_points = highlight_points(
           min = "red", max = "blue"),
         statline = "mean"
@@ -358,12 +336,6 @@ reactable(
 ### Add Bandline
 
 ```{r}
-report_spark <- report %>%
-  group_by(Product) %>%
-  summarize(`Monthly Sales` = list(Sales), .groups = "drop")
-```
-
-```{r}
 reactable(
   data = report_spark, 
   defaultPageSize = 13,
@@ -371,7 +343,7 @@ reactable(
     Product = colDef(maxWidth = 200),
     `Monthly Sales` = colDef(
       cell = function(value) react_sparkline(
-        report,
+        value,
         highlight_points = highlight_points(
           min = "red", max = "blue"),
         line_width = 1,
@@ -384,13 +356,6 @@ reactable(
 ```
 
 ### Change from Sparkline to Sparkbar
-
-```{r}
-report_spark <- report %>%
-  group_by(Product) %>%
-  summarize(`Monthly Sales` = list(Sales), .groups = "drop")
-```
-
 
 ```{r}
 reactable(
