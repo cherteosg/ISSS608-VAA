@@ -360,7 +360,7 @@ reactable(
 )
 ```
 
-### Change from Sparkline to Sparkbar
+## Change from Sparkline to Sparkbar
 
 ```{r warning = FALSE}
 reactable(
